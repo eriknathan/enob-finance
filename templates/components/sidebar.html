@@ -85,20 +85,6 @@
       Investimentos
     </a>
 
-    <!-- Simulador -->
-    <a href="{% url 'investment-simulator' %}"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
-         {% if cur == 'investment-simulator' %}
-           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
-         {% else %}
-           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
-         {% endif %}">
-      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-      </svg>
-      Simulador
-    </a>
-
     <!-- Parcelamentos -->
     <a href="{{ url_installments|default:'#' }}"
        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
@@ -111,6 +97,20 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
       </svg>
       Parcelamentos
+    </a>
+
+    <!-- Simulador -->
+    <a href="{% url 'investment-simulator' %}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if cur == 'investment-simulator' %}
+           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
+         {% else %}
+           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
+         {% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      Simulador
     </a>
 
     <!-- Divider -->
@@ -229,14 +229,6 @@
       </svg>
       Investimentos
     </a>
-    <a href="{% url 'investment-simulator' %}" onclick="closeMobileNav()"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
-         {% if cur == 'investment-simulator' %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
-      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-      </svg>
-      Simulador
-    </a>
     <a href="{{ url_installments|default:'#' }}" onclick="closeMobileNav()"
        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
          {% if 'installment' in cur %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
@@ -244,6 +236,14 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
       </svg>
       Parcelamentos
+    </a>
+    <a href="{% url 'investment-simulator' %}" onclick="closeMobileNav()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if cur == 'investment-simulator' %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      Simulador
     </a>
     <div class="my-4 mx-3 border-t border-white/5"></div>
     <a href="{{ url_export|default:'#' }}" onclick="closeMobileNav()"

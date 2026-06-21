@@ -1,15 +1,53 @@
+version: '3.8'
+
 services:
   web:
     build: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./db.sqlite3:/app/db.sqlite3
+    # Ports removed to force access via nginx
+    env_file:
+      - .env
     environment:
       DJANGO_SETTINGS_MODULE: enobfinance.settings
-      SECRET_KEY: ${SECRET_KEY}
       DEBUG: "0"
       ALLOWED_HOSTS: "*"
+      DB_HOST: db
     command: >
-      sh -c "python manage.py migrate &&
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
              gunicorn enobfinance.wsgi:application --bind 0.0.0.0:8000 --workers 2"
+    depends_on:
+      - db
+    volumes:
+      - static_volume:/app/staticfiles
+
+  db:
+    image: postgres:15-alpine
+    container_name: enobfinance_db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME:-enobfinance}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: enobfinance_nginx
+    ports:
+      - "8083:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/app/staticfiles
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  static_volume:
+
