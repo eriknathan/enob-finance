@@ -159,6 +159,7 @@
           <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest w-20">Mês</th>
           <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Entradas</th>
           <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Saídas</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Fixas</th>
           <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Investido</th>
           <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Faturas</th>
           <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Saldo</th>
@@ -199,6 +200,14 @@
           <td class="px-6 py-3 text-right">
             {% if row.exists %}
             <span class="text-sm font-semibold text-red-500 dark:text-red-400">{{ row.expenses|brl }}</span>
+            {% else %}
+            <span class="text-xs text-[#454D60] dark:text-white/20">—</span>
+            {% endif %}
+          </td>
+
+          <td class="px-6 py-3 text-right">
+            {% if row.exists %}
+            <span class="text-sm font-semibold text-orange-500 dark:text-orange-400">{{ row.fixed|brl }}</span>
             {% else %}
             <span class="text-xs text-[#454D60] dark:text-white/20">—</span>
             {% endif %}
@@ -247,6 +256,7 @@
           <td class="px-6 py-3 text-xs font-bold text-[#000918] dark:text-white uppercase tracking-widest">Total</td>
           <td class="px-6 py-3 text-right text-sm font-bold text-green-600 dark:text-green-400">{{ annual_totals.entries|brl }}</td>
           <td class="px-6 py-3 text-right text-sm font-bold text-red-500 dark:text-red-400">{{ annual_totals.expenses|brl }}</td>
+          <td class="px-6 py-3 text-right text-sm font-bold text-orange-500 dark:text-orange-400">{{ annual_totals.fixed|brl }}</td>
           <td class="px-6 py-3 text-right text-sm font-bold text-blue-500 dark:text-blue-400">{{ annual_totals.investments|brl }}</td>
           <td class="px-6 py-3 text-right text-sm font-bold text-purple-500 dark:text-purple-400">{{ annual_totals.invoices|brl }}</td>
           <td class="px-6 py-3 text-right text-sm font-bold text-[#454D60] dark:text-white/40">—</td>
@@ -405,6 +415,15 @@
             data: {{ chart_expenses|safe }},
             borderColor: '#ef4444',
             backgroundColor: 'rgba(239, 68, 68, 0.05)',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Fixas',
+            data: {{ chart_fixed|safe }},
+            borderColor: '#f97316',
+            backgroundColor: 'rgba(249, 115, 22, 0.05)',
             borderWidth: 2,
             tension: 0.4,
             fill: true

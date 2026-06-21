@@ -94,7 +94,7 @@
       <div>
         <h2 class="text-base font-semibold text-[#000918] dark:text-white">Despesas Fixas</h2>
         <p class="text-xs text-[#454D60] dark:text-white/40 mt-0.5">
-          Total: <span class="text-orange-500 dark:text-orange-400 font-semibold">{{ financial_month.total_fixed_expenses|brl }}</span>
+          Total: <span class="text-orange-500 dark:text-orange-400 font-semibold">{{ financial_month.total_fixed_display|brl }}</span>
         </p>
       </div>
       <a href="{% url 'fixed-expense-create' financial_month.year financial_month.month %}"
@@ -108,9 +108,9 @@
       </a>
     </div>
 
-    {% if fixed_expenses %}
+    {% if fixed_expenses or financial_month.total_card_invoices > 0 %}
     <div class="overflow-x-auto">
-      <table class="w-full">
+      <table class="w-full whitespace-nowrap">
         <thead>
           <tr class="bg-gray-100 dark:bg-black/40">
             <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Descrição</th>
@@ -120,6 +120,24 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+          {% if financial_month.total_card_invoices > 0 %}
+          <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors group bg-purple-50/50 dark:bg-purple-500/5">
+            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">
+              <div class="flex items-center gap-2">
+                Faturas de Cartão (Automático)
+                <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20">Cartões</span>
+              </div>
+            </td>
+            <td class="px-6 py-3 text-sm font-semibold text-orange-500 dark:text-orange-400 text-right">{{ financial_month.total_card_invoices|brl }}</td>
+            <td class="px-6 py-3 text-center">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-white/40">
+                Pendente no Cartão
+              </span>
+            </td>
+            <td class="px-4 py-3"></td>
+          </tr>
+          {% endif %}
+          
           {% for expense in fixed_expenses %}
           <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors group">
             <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">{{ expense.description }}</td>
@@ -190,7 +208,7 @@
 
     {% if entries or financial_month.previous_balance %}
     <div class="overflow-x-auto">
-      <table class="w-full">
+      <table class="w-full whitespace-nowrap">
         <thead>
           <tr class="bg-gray-100 dark:bg-black/40">
             <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Descrição</th>
@@ -276,7 +294,7 @@
 
     {% if variable_expenses %}
     <div class="overflow-x-auto">
-      <table class="w-full">
+      <table class="w-full whitespace-nowrap">
         <thead>
           <tr class="bg-gray-100 dark:bg-black/40">
             <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Descrição</th>
@@ -367,7 +385,7 @@
     </div>
     {% if investments %}
     <div class="overflow-x-auto">
-      <table class="w-full">
+      <table class="w-full whitespace-nowrap">
         <thead>
           <tr class="bg-gray-100 dark:bg-black/40">
             <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Onde</th>
@@ -438,12 +456,13 @@
     </div>
     {% if card_invoices %}
     <div class="overflow-x-auto">
-      <table class="w-full">
+      <table class="w-full whitespace-nowrap">
         <thead>
           <tr class="bg-gray-100 dark:bg-black/40">
             <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Cartão</th>
             <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Bandeira</th>
             <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Valor</th>
+            <th class="px-6 py-2.5 text-center text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Status</th>
             <th class="px-4 py-2.5"></th>
           </tr>
         </thead>
@@ -453,6 +472,14 @@
             <td class="px-6 py-3 text-sm font-medium text-[#000918] dark:text-white/80">{{ invoice.card.name }}</td>
             <td class="px-6 py-3 text-sm text-[#454D60] dark:text-white/40">{{ invoice.card.brand }}</td>
             <td class="px-6 py-3 text-sm font-semibold text-purple-500 dark:text-purple-400 text-right">{{ invoice.amount|brl }}</td>
+            <td class="px-6 py-3 text-center">
+              <form method="post" action="{% url 'invoice-toggle' invoice.pk %}" class="inline-block m-0 p-0">
+                {% csrf_token %}
+                <button type="submit" class="hover:opacity-80 transition-opacity focus:outline-none rounded-full cursor-pointer" title="Clique para alterar o status">
+                  {% include 'components/status_pill.html' with status=invoice.status %}
+                </button>
+              </form>
+            </td>
             <td class="px-4 py-3">
               <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
                 <a href="{% url 'invoice-update' invoice.pk %}"

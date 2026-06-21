@@ -40,6 +40,10 @@ class FinancialMonth(TimestampedModel):
         result = self.fixed_expenses.aggregate(total=models.Sum('amount'))['total']
         return result or Decimal('0')
 
+    def total_fixed_display(self):
+        """Used in UI to show fixed expenses + card invoices together as requested by user."""
+        return self.total_fixed_expenses() + self.total_card_invoices()
+
     def total_investments(self):
         result = self.investments.aggregate(total=models.Sum('amount'))['total']
         return result or Decimal('0')

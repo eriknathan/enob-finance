@@ -24,13 +24,34 @@ Campo de login: `email` (substitui `username`).
 
 Restrição de unicidade: `(user, year, month)`.
 
-| Campo | Tipo |
+| Campo | Tipo | Observação |
+|---|---|---|
+| `id` | PK | — |
+| `user` | FK → User | — |
+| `year` | int | — |
+| `month` | int | — |
+| `investment_goal` | decimal | Meta mensal de investimento |
+| `start_date` | date, nullable | Data de início do mês (opcional) |
+| `end_date` | date, nullable | Data de fim do mês (opcional) |
+| `created_at` | datetime | — |
+| `updated_at` | datetime | — |
+
+### Métodos calculados
+
+| Método | Descrição |
 |---|---|
-| `id` | PK |
-| `user` | FK → User |
-| `year` | int |
-| `month` | int |
-| `investment_goal` | decimal |
+| `total_entries()` | Soma de todas as entradas do mês |
+| `total_variable_expenses()` | Soma dos gastos variáveis |
+| `total_fixed_expenses()` | Soma das despesas fixas |
+| `total_card_invoices()` | Soma das faturas de cartão |
+| `total_investments()` | Soma dos investimentos |
+| `total_installment_payments()` | Soma das parcelas de planos `payment` |
+| `total_installment_sales()` | Soma das parcelas de planos `sale` |
+| `total_installment_loans()` | Soma das parcelas de planos `loan` |
+| `total_expenses()` | Variáveis + Fixas + Faturas |
+| `total_fixed_display()` | Fixas + Faturas (agrupado para exibição) |
+| `previous_balance()` | Saldo final do mês anterior (ou 0) |
+| `current_balance()` | Saldo atual: anterior + entradas − despesas − investimentos |
 
 ---
 
@@ -40,9 +61,11 @@ Restrição de unicidade: `(user, year, month)`.
 |---|---|
 | `id` | PK |
 | `financial_month` | FK → FinancialMonth |
-| `date` | date |
 | `description` | string |
 | `amount` | decimal |
+| `date` | date |
+| `created_at` | datetime |
+| `updated_at` | datetime |
 
 ---
 
@@ -53,9 +76,10 @@ Restrição de unicidade: `(user, year, month)`.
 | `id` | PK |
 | `financial_month` | FK → FinancialMonth |
 | `description` | string |
-| `date` | date |
-| `payment_method` | string |
 | `amount` | decimal |
+| `date` | date |
+| `created_at` | datetime |
+| `updated_at` | datetime |
 
 ---
 
@@ -66,32 +90,41 @@ Restrição de unicidade: `(user, year, month)`.
 | `id` | PK | — |
 | `financial_month` | FK → FinancialMonth | — |
 | `description` | string | — |
-| `status` | string | `paid` / `unpaid` |
 | `amount` | decimal | — |
+| `status` | string | `paid` / `unpaid` |
+| `created_at` | datetime | — |
+| `updated_at` | datetime | — |
 
 ---
 
 ## Card (`app_cards`)
 
-| Campo | Tipo |
-|---|---|
-| `id` | PK |
-| `user` | FK → User |
-| `name` | string |
-| `brand` | string |
-| `closing_day` | int |
-| `due_day` | int |
+| Campo | Tipo | Valores |
+|---|---|---|
+| `id` | PK | — |
+| `user` | FK → User | — |
+| `name` | string | — |
+| `brand` | string | `Visa`, `Mastercard`, `Elo`, `American Express`, `Hipercard`, `Outros` |
+| `closing_day` | int | Dia de fechamento da fatura |
+| `due_day` | int | Dia de vencimento |
+| `created_at` | datetime | — |
+| `updated_at` | datetime | — |
 
 ---
 
 ## CardInvoice — Fatura do cartão (`app_cards`)
 
-| Campo | Tipo |
-|---|---|
-| `id` | PK |
-| `card` | FK → Card |
-| `financial_month` | FK → FinancialMonth |
-| `amount` | decimal |
+Restrição de unicidade: `(card, financial_month)`.
+
+| Campo | Tipo | Valores |
+|---|---|---|
+| `id` | PK | — |
+| `card` | FK → Card | — |
+| `financial_month` | FK → FinancialMonth | — |
+| `amount` | decimal | — |
+| `status` | string | `paid` / `unpaid` |
+| `created_at` | datetime | — |
+| `updated_at` | datetime | — |
 
 ---
 
@@ -103,6 +136,9 @@ Restrição de unicidade: `(user, year, month)`.
 | `financial_month` | FK → FinancialMonth |
 | `place` | string |
 | `amount` | decimal |
+| `date` | date |
+| `created_at` | datetime |
+| `updated_at` | datetime |
 
 ---
 
@@ -113,7 +149,19 @@ Restrição de unicidade: `(user, year, month)`.
 | `id` | PK | — |
 | `user` | FK → User | — |
 | `name` | string | — |
-| `kind` | string | `payment` / `sale` |
+| `kind` | string | `payment` (saída) / `sale` (entrada) / `loan` (empréstimo) |
+| `created_at` | datetime | — |
+| `updated_at` | datetime | — |
+
+### Métodos calculados
+
+| Método | Descrição |
+|---|---|
+| `total()` | Soma de todas as parcelas |
+| `total_paid()` | Soma das parcelas pagas |
+| `total_remaining()` | `total() - total_paid()` |
+| `count_paid()` | Número de parcelas pagas |
+| `count_total()` | Número total de parcelas |
 
 ---
 
@@ -124,10 +172,12 @@ Restrição de unicidade: `(user, year, month)`.
 | `id` | PK | — |
 | `plan` | FK → InstallmentPlan | — |
 | `financial_month` | FK → FinancialMonth | — |
-| `number` | int | — |
+| `number` | int | Número da parcela |
 | `amount` | decimal | — |
 | `status` | string | `paid` / `unpaid` |
-| `receipt_url` | string | URL do comprovante |
+| `receipt_url` | string (URL) | Link do comprovante (Google Drive etc.) |
+| `created_at` | datetime | — |
+| `updated_at` | datetime | — |
 
 ---
 

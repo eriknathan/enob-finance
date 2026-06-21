@@ -10,6 +10,7 @@ Parte do ecossistema **Enob** · Design System Enobtech.
 
 | Documento | Descrição |
 |---|---|
+| [Manual de Uso](manual.md) | Como usar o sistema — guia completo para o usuário |
 | [Arquitetura](architecture.md) | Stack, organização em apps e regras de negócio |
 | [Padrões de Código](code-standards.md) | Convenções de estilo, estrutura e boas práticas |
 | [Design System](design-system.md) | Cores, tipografia, componentes e navegação |

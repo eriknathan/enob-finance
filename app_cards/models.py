@@ -42,6 +42,12 @@ class CardInvoice(TimestampedModel):
         related_name='card_invoices',
     )
     amount = models.DecimalField(max_digits=12, decimal_places=2)
+    status = models.CharField(
+        max_length=15,
+        choices=[('unpaid', 'Não pago'), ('paid', 'Pago')],
+        default='unpaid',
+        verbose_name='Status',
+    )
 
     class Meta:
         unique_together = ('card', 'financial_month')

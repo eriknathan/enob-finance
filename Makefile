@@ -11,6 +11,7 @@ help:
 	@echo "  make migrate         - Executa as migrações do banco de dados no container"
 	@echo "  make makemigrations  - Cria novas migrações baseadas nos modelos"
 	@echo "  make createsuperuser - Cria um usuário administrador no Django"
+	@echo "  make mock            - Popula o banco com dados de exemplo (demo@enob.com)"
 	@echo "  make shell           - Abre o terminal interativo do Django (shell)"
 	@echo "  make bash            - Abre o terminal (sh) dentro do container web"
 
@@ -45,6 +46,9 @@ makemigrations:
 
 createsuperuser:
 	docker compose exec web python manage.py createsuperuser
+
+mock:
+	docker compose exec web python mock_data.py
 
 shell:
 	docker compose exec web python manage.py shell

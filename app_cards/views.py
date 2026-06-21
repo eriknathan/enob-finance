@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView, DetailView, View
 
 from app_months.models import FinancialMonth
 
@@ -35,6 +35,29 @@ class CardCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['form_title'] = 'Novo Cartão'
+        return ctx
+
+
+class CardDetailView(LoginRequiredMixin, DetailView):
+    model = Card
+    template_name = 'app_cards/card_detail.html'
+    context_object_name = 'card'
+
+    def get_queryset(self):
+        return Card.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        invoices = self.object.invoices.select_related('financial_month').order_by('-financial_month__year', '-financial_month__month')
+        ctx['invoices'] = invoices
+        
+        # Prepare chart data for invoices history (last 12 invoices)
+        chart_invoices = list(invoices[:12])
+        chart_invoices.reverse()
+        
+        import json
+        ctx['chart_labels'] = json.dumps([f"{inv.financial_month.month:02d}/{inv.financial_month.year}" for inv in chart_invoices])
+        ctx['chart_amounts'] = json.dumps([float(inv.amount) for inv in chart_invoices])
         return ctx
 
 
@@ -159,3 +182,16 @@ class CardInvoiceDeleteView(LoginRequiredMixin, DeleteView):
         ctx['cancel_url'] = reverse('month-detail', kwargs={'year': fm.year, 'month': fm.month})
         ctx['item_label'] = f'Fatura: {self.object.card.name} — {fm}'
         return ctx
+
+class CardInvoiceToggleView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        invoice = get_object_or_404(CardInvoice, pk=pk, financial_month__user=request.user)
+        if invoice.status == 'unpaid' or invoice.status == 'PENDING':
+            invoice.status = 'paid'
+        else:
+            invoice.status = 'unpaid'
+        invoice.save()
+        referer = request.META.get('HTTP_REFERER')
+        if referer:
+            return redirect(referer)
+        return redirect('month-detail', year=invoice.financial_month.year, month=invoice.financial_month.month)
