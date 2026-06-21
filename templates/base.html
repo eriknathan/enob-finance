@@ -156,13 +156,61 @@
 
   {% else %}
 
-  <!-- Auth layout: full dark -->
-  <div class="min-h-screen bg-[#000918] flex flex-col">
-    <!-- Glow radial -->
-    <div class="absolute inset-0 pointer-events-none"
-         style="background:radial-gradient(80% 60% at 50% -5%, rgba(0,102,255,0.18), transparent)"></div>
-    <div class="relative flex-1 flex items-center justify-center p-6">
-      {% block auth_content %}{% endblock %}
+  <!-- Auth layout: Split screen -->
+  <div class="min-h-screen flex flex-col md:flex-row bg-white dark:bg-[#000918]">
+    <!-- Left side (Dark Summary) -->
+    <div class="hidden md:flex md:w-1/2 lg:w-5/12 bg-[#000918] border-r border-white/5 text-white p-12 flex-col justify-center relative overflow-hidden">
+      <!-- Decorator elements -->
+      <div class="absolute -top-32 -left-32 w-[30rem] h-[30rem] bg-white/5 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] bg-[#0066FF]/20 rounded-full blur-3xl"></div>
+      
+      <div class="relative z-10 max-w-lg mx-auto w-full">
+        <h1 class="text-4xl lg:text-5xl font-bold mb-6 tracking-tight">Enob<span class="text-[#00AAFF]">Finance</span></h1>
+        <p class="text-lg text-white/80 leading-relaxed mb-12">O seu ecossistema definitivo para gestão financeira pessoal. Controle seus gastos, acompanhe investimentos e projete seu futuro financeiro em um só lugar.</p>
+        
+        <div class="space-y-6">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0 backdrop-blur-sm border border-white/10">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-lg">Dashboard Inteligente</h3>
+              <p class="text-white/70 text-sm mt-0.5">Visão geral completa do seu dinheiro.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0 backdrop-blur-sm border border-white/10">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-lg">Acompanhamento Preciso</h3>
+              <p class="text-white/70 text-sm mt-0.5">Entradas, saídas e faturas de cartão de crédito.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0 backdrop-blur-sm border border-white/10">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-lg">Simulador de Juros</h3>
+              <p class="text-white/70 text-sm mt-0.5">Projete seu futuro com juros compostos (CDI).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right side (White/Dark context) -->
+    <div class="flex-1 flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-[#00050f] relative">
+      <!-- Dark mode toggle for auth pages (optional convenience) -->
+      <button onclick="toggleTheme()" class="absolute top-6 right-6 p-2 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Alternar tema">
+        <svg class="icon-sun w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <svg class="icon-moon w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+      </button>
+
+      <div class="w-full max-w-sm mx-auto animate-fade-up">
+        {% block auth_content %}{% endblock %}
+      </div>
     </div>
   </div>
 
