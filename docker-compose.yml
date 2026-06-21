@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+    environment:
+      DJANGO_SETTINGS_MODULE: enobfinance.settings
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: "0"
+      ALLOWED_HOSTS: "*"
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn enobfinance.wsgi:application --bind 0.0.0.0:8000 --workers 2"

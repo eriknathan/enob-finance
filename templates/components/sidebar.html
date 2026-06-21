@@ -1,0 +1,222 @@
+{% url 'home'          as url_home %}
+{% url 'dashboard'     as url_dashboard %}
+{% url 'month-current' as url_months %}
+{% url 'card-list'     as url_cards %}
+{% url 'investment-annual' as url_investments %}
+{% url 'installment-list'  as url_installments %}
+{% url 'export-excel'  as url_export %}
+
+{% with cur=request.resolver_match.url_name %}
+
+<!-- Desktop sidebar -->
+<aside class="w-64 min-h-screen bg-[#000918] flex flex-col py-8 px-4
+              fixed left-0 top-0 bottom-0 z-20 hidden lg:flex border-r border-white/5">
+
+  <!-- Logo -->
+  <div class="px-3 mb-10">
+    <a href="{{ url_dashboard|default:'/' }}" class="block">
+      <span class="text-xl font-bold bg-gradient-to-r from-[#0066FF] to-[#00AAFF] bg-clip-text text-transparent tracking-tight">
+        EnobFinance
+      </span>
+      <p class="text-[10px] text-white/30 mt-0.5 font-normal tracking-widest uppercase">Gestão financeira</p>
+    </a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex flex-col gap-0.5 flex-1">
+
+    <!-- Dashboard -->
+    <a href="{{ url_dashboard|default:url_home|default:'/' }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'dashboard' in cur or cur == 'home' %}
+           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+         {% else %}
+           text-white/60 hover:text-white hover:bg-white/5
+         {% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-1a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/>
+      </svg>
+      Dashboard
+    </a>
+
+    <!-- Meses -->
+    <a href="{{ url_months|default:'#' }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'month' in cur %}
+           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+         {% else %}
+           text-white/60 hover:text-white hover:bg-white/5
+         {% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      Meses
+    </a>
+
+    <!-- Cartões -->
+    <a href="{{ url_cards|default:'#' }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'card' in cur or 'invoice' in cur %}
+           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+         {% else %}
+           text-white/60 hover:text-white hover:bg-white/5
+         {% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+      </svg>
+      Cartões
+    </a>
+
+    <!-- Investimentos -->
+    <a href="{{ url_investments|default:'#' }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'investment' in cur %}
+           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+         {% else %}
+           text-white/60 hover:text-white hover:bg-white/5
+         {% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+      </svg>
+      Investimentos
+    </a>
+
+    <!-- Parcelamentos -->
+    <a href="{{ url_installments|default:'#' }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'installment' in cur %}
+           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+         {% else %}
+           text-white/60 hover:text-white hover:bg-white/5
+         {% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+      </svg>
+      Parcelamentos
+    </a>
+
+    <!-- Divider -->
+    <div class="my-3 border-t border-white/5"></div>
+
+    <!-- Exportar -->
+    <a href="{{ url_export|default:'#' }}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'export' in cur %}
+           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+         {% else %}
+           text-white/60 hover:text-white hover:bg-white/5
+         {% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Exportar Excel
+    </a>
+
+  </nav>
+
+  <!-- User footer -->
+  <div class="px-3 pt-4 border-t border-white/8">
+    <div class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#0066FF] to-[#00AAFF]
+                  flex items-center justify-center shrink-0">
+        <span class="text-white text-xs font-bold">{{ user.email|first|upper }}</span>
+      </div>
+      <p class="text-xs text-white/40 truncate leading-tight">{{ user.email }}</p>
+    </div>
+  </div>
+</aside>
+
+<!-- Mobile sidebar (drawer) -->
+<aside id="mobile-sidebar"
+       class="w-72 min-h-screen bg-[#000918] flex flex-col py-8 px-4
+              fixed left-0 top-0 bottom-0 z-40 lg:hidden
+              transform -translate-x-full transition-transform duration-300 ease-in-out
+              border-r border-white/5">
+
+  <!-- Close button -->
+  <button onclick="closeMobileNav()"
+          class="absolute top-4 right-4 p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-all">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+    </svg>
+  </button>
+
+  <!-- Logo -->
+  <div class="px-3 mb-10">
+    <span class="text-xl font-bold bg-gradient-to-r from-[#0066FF] to-[#00AAFF] bg-clip-text text-transparent tracking-tight">
+      EnobFinance
+    </span>
+  </div>
+
+  <!-- Nav (duplicated for mobile) -->
+  <nav class="flex flex-col gap-0.5 flex-1">
+    <a href="{{ url_dashboard|default:url_home|default:'/' }}" onclick="closeMobileNav()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'dashboard' in cur or cur == 'home' %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-1a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/>
+      </svg>
+      Dashboard
+    </a>
+    <a href="{{ url_months|default:'#' }}" onclick="closeMobileNav()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'month' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      Meses
+    </a>
+    <a href="{{ url_cards|default:'#' }}" onclick="closeMobileNav()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'card' in cur or 'invoice' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+      </svg>
+      Cartões
+    </a>
+    <a href="{{ url_investments|default:'#' }}" onclick="closeMobileNav()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'investment' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+      </svg>
+      Investimentos
+    </a>
+    <a href="{{ url_installments|default:'#' }}" onclick="closeMobileNav()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'installment' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+      </svg>
+      Parcelamentos
+    </a>
+    <div class="my-3 border-t border-white/5"></div>
+    <a href="{{ url_export|default:'#' }}" onclick="closeMobileNav()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+         {% if 'export' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Exportar Excel
+    </a>
+  </nav>
+
+  <!-- User footer -->
+  <div class="px-3 pt-4 border-t border-white/8">
+    <div class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#0066FF] to-[#00AAFF]
+                  flex items-center justify-center shrink-0">
+        <span class="text-white text-xs font-bold">{{ user.email|first|upper }}</span>
+      </div>
+      <p class="text-xs text-white/40 truncate">{{ user.email }}</p>
+    </div>
+  </div>
+</aside>
+
+{% endwith %}

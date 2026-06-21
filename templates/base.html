@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}EnobFinance{% endblock %}</title>
 
+  <!-- Theme: apply stored preference before render to avoid flash -->
+  <script>
+    (function () {
+      const t = localStorage.getItem('theme');
+      if (t === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -12,99 +24,68 @@
       darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Sora', 'sans-serif'],
-          },
+          fontFamily: { sans: ['Sora', 'sans-serif'] },
           colors: {
-            brand: {
-              primary: '#0066FF',
-              light: '#00AAFF',
-            },
-            dark: {
-              bg: '#000918',
-              surface: '#0A1428',
-              muted: '#454D60',
-            },
+            brand: { primary: '#0066FF', light: '#00AAFF' },
+            surface: { dark: '#000918', elevated: '#0A1428', muted: '#454D60' },
+          },
+          boxShadow: {
+            'blue-sm':  '0 4px 14px 0 rgba(0,102,255,0.25)',
+            'blue-md':  '0 8px 24px 0 rgba(0,102,255,0.40)',
           },
         },
       },
     }
   </script>
 
-  <!-- Sora font -->
+  <!-- Sora -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: 'Sora', sans-serif; }
+    * { font-family: 'Sora', sans-serif; }
+    /* Smooth theme transitions */
+    body, .transition-theme { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #454D60; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0066FF; }
   </style>
 
   {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 text-[#000918] antialiased font-['Sora']">
+
+<body class="bg-gray-50 dark:bg-[#000918] text-[#000918] dark:text-white antialiased transition-theme">
 
   {% if user.is_authenticated %}
+
+  <!-- Mobile overlay -->
+  <div id="mobile-overlay"
+       class="fixed inset-0 bg-black/60 z-30 lg:hidden hidden"
+       onclick="closeMobileNav()"></div>
+
   <div class="flex min-h-screen">
 
     <!-- Sidebar -->
-    {% block sidebar %}
-    <aside class="w-64 min-h-screen bg-[#000918] flex flex-col py-8 px-4 fixed left-0 top-0 bottom-0 z-20 hidden lg:flex">
-      <!-- Logo -->
-      <div class="px-4 mb-8">
-        <span class="text-xl font-bold bg-gradient-to-r from-[#0066FF] to-[#00AAFF] bg-clip-text text-transparent">
-          EnobFinance
-        </span>
-      </div>
+    {% include 'components/sidebar.html' %}
 
-      <!-- Nav items -->
-      <nav class="flex flex-col gap-1 flex-1">
-        <a href="{% url 'home' %}"
-           class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-white/70 hover:bg-white/5 transition-all text-sm font-medium">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-          </svg>
-          Dashboard
-        </a>
-      </nav>
-
-      <!-- User info -->
-      <div class="px-4 pt-4 border-t border-white/10">
-        <p class="text-xs text-white/40 truncate">{{ user.email }}</p>
-      </div>
-    </aside>
-    {% endblock %}
-
-    <!-- Main content -->
-    <div class="flex-1 flex flex-col lg:ml-64">
+    <!-- Content wrapper -->
+    <div class="flex-1 flex flex-col lg:ml-64 min-w-0">
 
       <!-- Topbar -->
-      {% block topbar %}
-      <header class="h-[68px] bg-white/90 backdrop-blur border-b border-gray-200
-                     flex items-center px-6 justify-between sticky top-0 z-10">
-        <div class="flex items-center gap-3">
-          {% block breadcrumb %}{% endblock %}
-        </div>
-        <div class="flex items-center gap-4">
-          {% block topbar_actions %}{% endblock %}
-          <a href="{% url 'logout' %}"
-             class="text-sm text-[#454D60] hover:text-[#000918] transition-colors font-medium">
-            Sair
-          </a>
-        </div>
-      </header>
-      {% endblock %}
+      {% include 'components/topbar.html' %}
 
-      <!-- Messages -->
+      <!-- Flash messages -->
       {% if messages %}
-      <div class="px-6 pt-4">
+      <div class="px-6 pt-4 space-y-2">
         {% for message in messages %}
-        <div class="px-4 py-3 rounded-lg text-sm font-medium mb-2
-          {% if message.tags == 'error' %}bg-red-50 text-red-600
-          {% elif message.tags == 'success' %}bg-green-50 text-green-600
-          {% elif message.tags == 'warning' %}bg-yellow-50 text-yellow-700
-          {% else %}bg-blue-50 text-blue-600{% endif %}">
+        <div class="px-4 py-3 rounded-lg text-sm font-medium
+          {% if message.tags == 'error' %}bg-red-50 text-red-600 border border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20
+          {% elif message.tags == 'success' %}bg-green-50 text-green-600 border border-green-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20
+          {% elif message.tags == 'warning' %}bg-yellow-50 text-yellow-700 border border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20
+          {% else %}bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20{% endif %}">
           {{ message }}
         </div>
         {% endfor %}
@@ -121,14 +102,56 @@
 
   {% else %}
 
-  <!-- Unauthenticated layout -->
+  <!-- Auth layout: full dark -->
   <div class="min-h-screen bg-[#000918] flex flex-col">
-    <div class="flex-1 flex items-center justify-center p-6">
+    <!-- Glow radial -->
+    <div class="absolute inset-0 pointer-events-none"
+         style="background:radial-gradient(80% 60% at 50% -5%, rgba(0,102,255,0.18), transparent)"></div>
+    <div class="relative flex-1 flex items-center justify-center p-6">
       {% block auth_content %}{% endblock %}
     </div>
   </div>
 
   {% endif %}
+
+  <!-- Theme toggle script -->
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+      updateThemeIcon();
+    }
+
+    function updateThemeIcon() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const sunEl  = document.getElementById('icon-sun');
+      const moonEl = document.getElementById('icon-moon');
+      if (sunEl && moonEl) {
+        sunEl.classList.toggle('hidden', isDark);
+        moonEl.classList.toggle('hidden', !isDark);
+      }
+    }
+
+    function openMobileNav() {
+      document.getElementById('mobile-sidebar').classList.remove('-translate-x-full');
+      document.getElementById('mobile-overlay').classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeMobileNav() {
+      document.getElementById('mobile-sidebar').classList.add('-translate-x-full');
+      document.getElementById('mobile-overlay').classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', updateThemeIcon);
+  </script>
 
   {% block extra_scripts %}{% endblock %}
 </body>

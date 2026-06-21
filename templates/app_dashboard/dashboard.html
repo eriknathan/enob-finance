@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+
+{% block title %}Dashboard — EnobFinance{% endblock %}
+
+{% block breadcrumb %}
+<span class="text-sm font-semibold text-[#000918] dark:text-white">Dashboard</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Current month hero -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+  <!-- Balance card (wide) -->
+  <div class="sm:col-span-2 rounded-2xl bg-gradient-to-br from-[#0A1428] to-[#000918]
+              text-white p-6 border border-white/8 shadow-xl relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none"
+         style="background:radial-gradient(60% 80% at 0% 0%, rgba(0,102,255,0.18), transparent)"></div>
+    <div class="relative">
+      <p class="text-[10px] text-white/40 font-medium uppercase tracking-widest mb-1">Saldo — {{ current_month_name }} {{ today.year }}</p>
+      <p class="text-4xl font-bold tracking-tight {{ current_month.current_balance|balance_color }}">
+        {{ current_month.current_balance|brl }}
+      </p>
+      {% if current_month.previous_balance %}
+      <p class="text-xs text-white/30 mt-2">
+        Mês anterior: <span class="text-white/50 font-medium">{{ current_month.previous_balance|brl }}</span>
+      </p>
+      {% endif %}
+      <a href="{% url 'month-current' %}"
+         class="inline-flex items-center gap-1.5 mt-5 px-4 py-2 rounded-lg text-xs font-semibold
+                bg-white/10 hover:bg-white/15 text-white transition-all border border-white/10">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        Ver mês completo
+      </a>
+    </div>
+  </div>
+
+  <!-- Entradas -->
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm p-5 transition-theme">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest">Entradas</p>
+      <span class="w-7 h-7 rounded-lg bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
+        <svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+      </span>
+    </div>
+    <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ current_month.total_entries|brl }}</p>
+    {% if current_month.total_installment_sales %}
+    <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
+      + Vendas: <span class="font-medium">{{ current_month.total_installment_sales|brl }}</span>
+    </p>
+    {% endif %}
+  </div>
+
+  <!-- Despesas -->
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm p-5 transition-theme">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest">Saídas</p>
+      <span class="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
+        <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+        </svg>
+      </span>
+    </div>
+    <p class="text-2xl font-bold text-red-500 dark:text-red-400">{{ current_month.total_expenses|brl }}</p>
+    <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
+      Var: <span class="font-medium">{{ current_month.total_variable_expenses|brl }}</span>
+      · Fix: <span class="font-medium">{{ current_month.total_fixed_expenses|brl }}</span>
+    </p>
+  </div>
+
+  <!-- Investimentos -->
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm p-5 transition-theme">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest">Investido</p>
+      <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
+        <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+        </svg>
+      </span>
+    </div>
+    <p class="text-2xl font-bold text-blue-500 dark:text-blue-400">{{ current_month.total_investments|brl }}</p>
+    {% if current_month.investment_goal %}
+    <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
+      Meta: <span class="font-medium">{{ current_month.investment_goal|brl }}</span>
+    </p>
+    {% endif %}
+  </div>
+
+  <!-- Faturas -->
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm p-5 transition-theme">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest">Faturas</p>
+      <span class="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center">
+        <svg class="w-3.5 h-3.5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+        </svg>
+      </span>
+    </div>
+    <p class="text-2xl font-bold text-purple-500 dark:text-purple-400">{{ current_month.total_card_invoices|brl }}</p>
+    {% if current_month.total_installment_payments %}
+    <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
+      Parcelas: <span class="font-medium">{{ current_month.total_installment_payments|brl }}</span>
+    </p>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- Annual view -->
+<div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+            shadow-sm overflow-hidden transition-theme mb-8">
+
+  <!-- Header with year navigation -->
+  <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/8">
+    <div>
+      <h2 class="text-base font-semibold text-[#000918] dark:text-white">Visão Anual</h2>
+      <p class="text-xs text-[#454D60] dark:text-white/40 mt-0.5">Totais por mês em {{ selected_year }}</p>
+    </div>
+    <div class="flex items-center gap-1">
+      <a href="?ano={{ prev_year }}"
+         class="p-2 rounded-lg text-[#454D60] dark:text-white/40
+                hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#000918] dark:hover:text-white
+                transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </a>
+      <span class="px-3 py-1.5 text-sm font-semibold text-[#000918] dark:text-white">{{ selected_year }}</span>
+      <a href="?ano={{ next_year }}"
+         class="p-2 rounded-lg text-[#454D60] dark:text-white/40
+                hover:bg-gray-100 dark:hover:bg-white/5 hover:text-[#000918] dark:hover:text-white
+                transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead>
+        <tr class="bg-[#000918] dark:bg-black/40">
+          <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest w-20">Mês</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Entradas</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Saídas</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Investido</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Saldo</th>
+          <th class="px-4 py-2.5 w-12"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+        {% for row in annual_rows %}
+        <tr class="transition-colors
+          {% if row.is_current %}bg-blue-50/60 dark:bg-[#0066FF]/5 hover:bg-blue-50 dark:hover:bg-[#0066FF]/8
+          {% elif row.exists %}hover:bg-gray-50 dark:hover:bg-white/3
+          {% else %}opacity-40{% endif %}">
+
+          <td class="px-6 py-3">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-semibold
+                {% if row.is_current %}text-[#0066FF] dark:text-[#00AAFF]
+                {% else %}text-[#000918] dark:text-white/80{% endif %}">
+                {{ row.name }}
+              </span>
+              {% if row.is_current %}
+              <span class="px-1.5 py-0.5 rounded text-[9px] font-bold
+                           bg-[#0066FF]/10 text-[#0066FF] dark:bg-[#0066FF]/20 dark:text-[#00AAFF]">
+                Atual
+              </span>
+              {% endif %}
+            </div>
+          </td>
+
+          <td class="px-6 py-3 text-right">
+            {% if row.exists %}
+            <span class="text-sm font-semibold text-green-600 dark:text-green-400">{{ row.entries|brl }}</span>
+            {% else %}
+            <span class="text-xs text-[#454D60] dark:text-white/20">—</span>
+            {% endif %}
+          </td>
+
+          <td class="px-6 py-3 text-right">
+            {% if row.exists %}
+            <span class="text-sm font-semibold text-red-500 dark:text-red-400">{{ row.expenses|brl }}</span>
+            {% else %}
+            <span class="text-xs text-[#454D60] dark:text-white/20">—</span>
+            {% endif %}
+          </td>
+
+          <td class="px-6 py-3 text-right">
+            {% if row.exists %}
+            <span class="text-sm font-semibold text-blue-500 dark:text-blue-400">{{ row.investments|brl }}</span>
+            {% else %}
+            <span class="text-xs text-[#454D60] dark:text-white/20">—</span>
+            {% endif %}
+          </td>
+
+          <td class="px-6 py-3 text-right">
+            {% if row.exists %}
+            <span class="text-sm font-bold {{ row.balance|balance_color }}">{{ row.balance|brl }}</span>
+            {% else %}
+            <span class="text-xs text-[#454D60] dark:text-white/20">—</span>
+            {% endif %}
+          </td>
+
+          <td class="px-4 py-3 text-center">
+            <a href="{{ row.url }}"
+               class="p-1.5 rounded-lg inline-flex text-[#454D60] dark:text-white/30
+                      hover:text-[#0066FF] dark:hover:text-[#00AAFF]
+                      hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="bg-gray-50 dark:bg-white/3 border-t-2 border-gray-200 dark:border-white/10">
+          <td class="px-6 py-3 text-xs font-bold text-[#000918] dark:text-white uppercase tracking-widest">Total</td>
+          <td class="px-6 py-3 text-right text-sm font-bold text-green-600 dark:text-green-400">{{ annual_totals.entries|brl }}</td>
+          <td class="px-6 py-3 text-right text-sm font-bold text-red-500 dark:text-red-400">{{ annual_totals.expenses|brl }}</td>
+          <td class="px-6 py-3 text-right text-sm font-bold text-blue-500 dark:text-blue-400">{{ annual_totals.investments|brl }}</td>
+          <td class="px-6 py-3 text-right text-sm font-bold text-[#454D60] dark:text-white/40">—</td>
+          <td class="px-4 py-3"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- Quick access shortcuts -->
+<div>
+  <h2 class="text-sm font-semibold text-[#000918] dark:text-white mb-4 uppercase tracking-widest">Acesso rápido</h2>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+
+    <a href="{% url 'month-current' %}"
+       class="flex flex-col items-center gap-2.5 p-4 rounded-2xl
+              bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm hover:shadow-md hover:border-[#0066FF]/30 dark:hover:border-[#0066FF]/30
+              transition-all group text-center">
+      <span class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-[#0066FF]/10
+                   flex items-center justify-center
+                   group-hover:bg-gradient-to-br group-hover:from-[#0066FF] group-hover:to-[#00AAFF]
+                   transition-all">
+        <svg class="w-5 h-5 text-[#0066FF] dark:text-[#00AAFF] group-hover:text-white transition-colors"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </span>
+      <span class="text-xs font-semibold text-[#000918] dark:text-white/80
+                   group-hover:text-[#0066FF] dark:group-hover:text-[#00AAFF] transition-colors">
+        Mês atual
+      </span>
+    </a>
+
+    <a href="{% url 'card-list' %}"
+       class="flex flex-col items-center gap-2.5 p-4 rounded-2xl
+              bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm hover:shadow-md hover:border-purple-300/50 dark:hover:border-purple-500/30
+              transition-all group text-center">
+      <span class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10
+                   flex items-center justify-center
+                   group-hover:bg-purple-500 transition-all">
+        <svg class="w-5 h-5 text-purple-500 group-hover:text-white transition-colors"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+        </svg>
+      </span>
+      <span class="text-xs font-semibold text-[#000918] dark:text-white/80
+                   group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+        Cartões
+      </span>
+    </a>
+
+    <a href="{% url 'investment-annual' %}"
+       class="flex flex-col items-center gap-2.5 p-4 rounded-2xl
+              bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm hover:shadow-md hover:border-blue-300/50 dark:hover:border-blue-500/30
+              transition-all group text-center">
+      <span class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10
+                   flex items-center justify-center
+                   group-hover:bg-blue-500 transition-all">
+        <svg class="w-5 h-5 text-blue-500 group-hover:text-white transition-colors"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+        </svg>
+      </span>
+      <span class="text-xs font-semibold text-[#000918] dark:text-white/80
+                   group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        Investimentos
+      </span>
+    </a>
+
+    <a href="{% url 'installment-list' %}"
+       class="flex flex-col items-center gap-2.5 p-4 rounded-2xl
+              bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm hover:shadow-md hover:border-orange-300/50 dark:hover:border-orange-500/30
+              transition-all group text-center">
+      <span class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-500/10
+                   flex items-center justify-center
+                   group-hover:bg-orange-500 transition-all">
+        <svg class="w-5 h-5 text-orange-500 group-hover:text-white transition-colors"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+        </svg>
+      </span>
+      <span class="text-xs font-semibold text-[#000918] dark:text-white/80
+                   group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+        Parcelamentos
+      </span>
+    </a>
+
+    {% url 'export-excel' as url_export %}
+    <a href="{{ url_export|default:'#' }}"
+       class="flex flex-col items-center gap-2.5 p-4 rounded-2xl
+              bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
+              shadow-sm hover:shadow-md hover:border-green-300/50 dark:hover:border-green-500/30
+              transition-all group text-center
+              {% if not url_export %}opacity-50 cursor-not-allowed{% endif %}">
+      <span class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-500/10
+                   flex items-center justify-center
+                   {% if url_export %}group-hover:bg-green-500{% endif %} transition-all">
+        <svg class="w-5 h-5 text-green-500 {% if url_export %}group-hover:text-white{% endif %} transition-colors"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </span>
+      <span class="text-xs font-semibold text-[#000918] dark:text-white/80
+                   {% if url_export %}group-hover:text-green-600 dark:group-hover:text-green-400{% endif %}
+                   transition-colors">
+        Exportar Excel
+      </span>
+    </a>
+
+  </div>
+</div>
+
+{% endblock %}

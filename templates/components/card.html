@@ -1,0 +1,66 @@
+{% comment %}
+Usage:
+  {% include 'components/card.html' with title='Resumo' variant='default' %}
+    ... content goes inside the block - but components don't support blocks.
+    Use card_start.html / card_end.html pattern or wrap manually.
+
+  For balance cards:
+  {% include 'components/card.html' with variant='balance' title='Saldo atual' value='R$ 1.234,56' subtitle='Mês de junho' %}
+
+  For summary stat cards:
+  {% include 'components/card.html' with variant='stat' label='Entradas' value='R$ 5.000,00' trend='up' %}
+
+Variables:
+  variant   — 'default' | 'balance' | 'stat'
+  title     — card title
+  subtitle  — subtitle / period label
+  value     — main value (for balance / stat)
+  label     — small label above value (for stat)
+  trend     — 'up' | 'down' (for stat)
+{% endcomment %}
+
+{% if variant == 'balance' %}
+<div class="rounded-2xl bg-gradient-to-br from-[#0A1428] to-[#000918]
+            text-white p-6 shadow-xl border border-white/8 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none"
+       style="background:radial-gradient(60% 80% at 0% 0%, rgba(0,102,255,0.15), transparent)"></div>
+  <div class="relative">
+    <p class="text-xs text-white/50 font-medium tracking-widest uppercase mb-1">{{ title }}</p>
+    {% if subtitle %}<p class="text-xs text-white/30 mb-3">{{ subtitle }}</p>{% endif %}
+    <p class="text-3xl font-bold tracking-tight">{{ value|default:'R$ 0,00' }}</p>
+  </div>
+</div>
+
+{% elif variant == 'stat' %}
+<div class="rounded-2xl bg-white dark:bg-[#0A1428]
+            border border-gray-100 dark:border-white/8
+            shadow-sm p-5 transition-theme">
+  <p class="text-xs font-medium text-[#454D60] dark:text-white/40 uppercase tracking-widest mb-1">{{ label }}</p>
+  <p class="text-2xl font-bold text-[#000918] dark:text-white tracking-tight">{{ value|default:'R$ 0,00' }}</p>
+  {% if trend == 'up' %}
+    <p class="text-xs text-green-600 dark:text-green-400 font-medium mt-1.5 flex items-center gap-1">
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+      </svg>
+      {{ trend_label|default:'entrada' }}
+    </p>
+  {% elif trend == 'down' %}
+    <p class="text-xs text-red-500 dark:text-red-400 font-medium mt-1.5 flex items-center gap-1">
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+      {{ trend_label|default:'saída' }}
+    </p>
+  {% endif %}
+</div>
+
+{% else %}
+<!-- default -->
+<div class="rounded-2xl bg-white dark:bg-[#0A1428]
+            border border-gray-100 dark:border-white/8
+            shadow-sm p-6 transition-theme">
+  {% if title %}
+  <h3 class="text-base font-semibold text-[#000918] dark:text-white mb-4">{{ title }}</h3>
+  {% endif %}
+</div>
+{% endif %}

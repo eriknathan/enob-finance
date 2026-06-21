@@ -1,0 +1,32 @@
+{% comment %}
+Usage:
+  {% include 'components/button.html' with variant='primary' label='Salvar' %}
+  {% include 'components/button.html' with variant='secondary' label='Cancelar' type='button' %}
+  {% include 'components/button.html' with variant='destructive' label='Excluir' %}
+
+Variables:
+  variant    — 'primary' | 'secondary' | 'destructive'  (default: primary)
+  label      — button text
+  type       — 'submit' | 'button' | 'reset'             (default: submit)
+  disabled   — any truthy value to disable
+  extra_class — additional classes
+{% endcomment %}
+
+<button type="{{ type|default:'submit' }}"
+        {% if disabled %}disabled{% endif %}
+        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all
+          {% if variant == 'secondary' %}
+            border border-gray-200 dark:border-white/10 text-[#454D60] dark:text-white/70
+            bg-white dark:bg-white/5
+            hover:bg-gray-50 dark:hover:bg-white/8
+          {% elif variant == 'destructive' %}
+            bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400
+            hover:bg-red-100 dark:hover:bg-red-500/20
+          {% else %}
+            bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white
+            shadow-blue-sm hover:shadow-blue-md
+            disabled:opacity-50 disabled:cursor-not-allowed
+          {% endif %}
+          {{ extra_class }}">
+  {{ label }}
+</button>

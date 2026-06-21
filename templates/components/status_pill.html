@@ -1,0 +1,25 @@
+{% comment %}
+Usage:
+  {% include 'components/status_pill.html' with status='paid' %}
+  {% include 'components/status_pill.html' with status='unpaid' %}
+  {% include 'components/status_pill.html' with status=installment.status %}
+
+Variables:
+  status — 'paid' | 'unpaid'
+{% endcomment %}
+
+{% if status == 'paid' %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full
+             bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400
+             text-xs font-semibold">
+  <span class="w-1.5 h-1.5 rounded-full bg-green-500 dark:bg-green-400"></span>
+  Pago
+</span>
+{% else %}
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full
+             bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400
+             text-xs font-semibold">
+  <span class="w-1.5 h-1.5 rounded-full bg-red-500 dark:bg-red-400"></span>
+  Não pago
+</span>
+{% endif %}

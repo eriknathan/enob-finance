@@ -1,0 +1,54 @@
+{% load core_tags %}
+{% comment %}
+Expects in context:
+  carousel_months — list of {year, month, name, active}
+  prev_url        — URL for previous month
+  next_url        — URL for next month
+  financial_month — the current FinancialMonth object
+  month_name      — string name of current month
+{% endcomment %}
+
+<div class="mb-6">
+  <!-- Month title -->
+  <div class="flex items-center justify-between mb-3">
+    <h1 class="text-2xl font-bold text-[#000918] dark:text-white">
+      {{ month_name }}
+      <span class="text-lg font-normal text-[#454D60] dark:text-white/40 ml-1">{{ financial_month.year }}</span>
+    </h1>
+    <div class="flex items-center gap-1">
+      <a href="{{ prev_url }}"
+         class="p-2 rounded-lg text-[#454D60] dark:text-white/40
+                hover:text-[#000918] dark:hover:text-white
+                hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </a>
+      <a href="{{ next_url }}"
+         class="p-2 rounded-lg text-[#454D60] dark:text-white/40
+                hover:text-[#000918] dark:hover:text-white
+                hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Horizontal scroll of month pills -->
+  <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide"
+       style="-ms-overflow-style:none; scrollbar-width:none;">
+    {% for m in carousel_months %}
+    <a href="{% url 'month-detail' m.year m.month %}"
+       class="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap
+         {% if m.active %}
+           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white shadow-blue-sm
+         {% else %}
+           bg-gray-100 dark:bg-white/5 text-[#454D60] dark:text-white/50
+           hover:bg-gray-200 dark:hover:bg-white/10
+         {% endif %}">
+      {{ m.name|slice:":3" }} {{ m.year }}
+    </a>
+    {% endfor %}
+  </div>
+</div>

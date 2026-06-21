@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+
+{% block title %}Parcelamentos — EnobFinance{% endblock %}
+
+{% block breadcrumb %}
+<span class="text-sm font-semibold text-[#000918] dark:text-white">Parcelamentos</span>
+{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'installment-create' %}"
+   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold
+          bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white shadow-blue-sm hover:shadow-blue-md transition-all">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+  </svg>
+  Novo plano
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="mb-6">
+  <h1 class="text-2xl font-bold text-[#000918] dark:text-white">Parcelamentos</h1>
+  <p class="text-sm text-[#454D60] dark:text-white/40 mt-1">Pagamentos e vendas parceladas</p>
+</div>
+
+{% if not payments and not sales %}
+<div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-12 text-center transition-theme">
+  <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-4">
+    <svg class="w-6 h-6 text-[#454D60] dark:text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+    </svg>
+  </div>
+  <p class="text-sm font-medium text-[#000918] dark:text-white mb-1">Nenhum plano cadastrado</p>
+  <p class="text-xs text-[#454D60] dark:text-white/40 mb-6">Crie planos de pagamento ou venda parcelada.</p>
+  <a href="{% url 'installment-create' %}"
+     class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold
+            bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white shadow-blue-sm hover:shadow-blue-md transition-all">
+    Criar plano
+  </a>
+</div>
+{% endif %}
+
+{% if payments %}
+<div class="mb-8">
+  <div class="flex items-center gap-2 mb-4">
+    <span class="px-2.5 py-0.5 rounded-full bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-semibold">Pagamentos</span>
+    <span class="text-xs text-[#454D60] dark:text-white/40">{{ payments|length }} plano{{ payments|length|pluralize }}</span>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    {% for plan in payments %}{% include 'app_installments/_plan_card.html' %}{% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if sales %}
+<div>
+  <div class="flex items-center gap-2 mb-4">
+    <span class="px-2.5 py-0.5 rounded-full bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-semibold">Vendas</span>
+    <span class="text-xs text-[#454D60] dark:text-white/40">{{ sales|length }} plano{{ sales|length|pluralize }}</span>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    {% for plan in sales %}{% include 'app_installments/_plan_card.html' %}{% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+
+{% block title %}Investimentos {{ year }} — EnobFinance{% endblock %}
+
+{% block breadcrumb %}
+<span class="text-sm font-semibold text-[#000918] dark:text-white">Investimentos</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-[#000918] dark:text-white">Investimentos</h1>
+    <p class="text-sm text-[#454D60] dark:text-white/40 mt-1">Meta × realizado por mês</p>
+  </div>
+  <!-- Year navigation -->
+  <div class="flex items-center gap-2">
+    <a href="{% url 'investment-annual-year' prev_year %}"
+       class="p-2 rounded-lg text-[#454D60] dark:text-white/40 hover:text-[#000918] dark:hover:text-white
+              hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </a>
+    <span class="text-lg font-bold text-[#000918] dark:text-white px-2">{{ year }}</span>
+    <a href="{% url 'investment-annual-year' next_year %}"
+       class="p-2 rounded-lg text-[#454D60] dark:text-white/40 hover:text-[#000918] dark:hover:text-white
+              hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<!-- Annual totals summary -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+  <div class="rounded-2xl bg-gradient-to-br from-[#0A1428] to-[#000918]
+              text-white p-5 border border-white/8 shadow-xl relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none"
+         style="background:radial-gradient(60% 80% at 0% 0%, rgba(0,102,255,0.15), transparent)"></div>
+    <div class="relative">
+      <p class="text-[10px] text-white/40 uppercase tracking-widest font-medium mb-1">Total investido</p>
+      <p class="text-2xl font-bold text-blue-300">{{ total_invested|brl }}</p>
+    </div>
+  </div>
+
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-5 transition-theme">
+    <p class="text-[10px] text-[#454D60] dark:text-white/40 uppercase tracking-widest font-medium mb-1">Meta anual</p>
+    <p class="text-2xl font-bold text-[#000918] dark:text-white">{{ total_goal|brl }}</p>
+  </div>
+
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-5 transition-theme">
+    <p class="text-[10px] text-[#454D60] dark:text-white/40 uppercase tracking-widest font-medium mb-1">
+      {% if total_diff >= 0 %}Superado em{% else %}Faltam{% endif %}
+    </p>
+    <p class="text-2xl font-bold {% if total_diff >= 0 %}text-green-500 dark:text-green-400{% else %}text-red-500 dark:text-red-400{% endif %}">
+      {{ total_diff|brl }}
+    </p>
+    {% if total_pct %}
+    <p class="text-xs text-[#454D60] dark:text-white/40 mt-1">{{ total_pct }}% da meta anual</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Monthly table -->
+<div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm overflow-hidden transition-theme">
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead>
+        <tr class="bg-[#000918] dark:bg-black/40">
+          <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Mês</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Meta</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Investido</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Diferença</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">% Meta</th>
+          <th class="px-4 py-2.5 text-center text-[10px] font-semibold text-white/60 uppercase tracking-widest">Ações</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+        {% for row in rows %}
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors group">
+
+          <!-- Month name + link -->
+          <td class="px-6 py-4">
+            {% if row.fm %}
+            <a href="{% url 'month-detail' row.fm.year row.fm.month %}"
+               class="text-sm font-semibold text-[#000918] dark:text-white hover:text-[#0066FF] dark:hover:text-[#00AAFF] transition-colors">
+              {{ row.month_name }}
+            </a>
+            {% else %}
+            <span class="text-sm text-[#454D60] dark:text-white/40">{{ row.month_name }}</span>
+            {% endif %}
+          </td>
+
+          <!-- Goal -->
+          <td class="px-6 py-4 text-right">
+            <span class="text-sm font-medium text-[#454D60] dark:text-white/60">{{ row.goal|brl }}</span>
+          </td>
+
+          <!-- Invested -->
+          <td class="px-6 py-4 text-right">
+            <span class="text-sm font-semibold
+              {% if row.invested > 0 %}text-blue-500 dark:text-blue-400{% else %}text-[#454D60] dark:text-white/30{% endif %}">
+              {{ row.invested|brl }}
+            </span>
+          </td>
+
+          <!-- Diff -->
+          <td class="px-6 py-4 text-right">
+            {% if row.goal > 0 or row.invested > 0 %}
+            <span class="text-sm font-semibold
+              {% if row.diff >= 0 %}text-green-500 dark:text-green-400{% else %}text-red-500 dark:text-red-400{% endif %}">
+              {{ row.diff|brl }}
+            </span>
+            {% else %}
+            <span class="text-sm text-[#454D60] dark:text-white/20">—</span>
+            {% endif %}
+          </td>
+
+          <!-- % -->
+          <td class="px-6 py-4 text-right">
+            {% if row.pct is not None %}
+            <div class="flex items-center justify-end gap-2">
+              <div class="w-16 h-1.5 rounded-full bg-gray-100 dark:bg-white/10 overflow-hidden">
+                <div class="h-full rounded-full transition-all
+                  {% if row.pct >= 100 %}bg-green-500{% elif row.pct >= 70 %}bg-blue-500{% else %}bg-red-400{% endif %}"
+                     style="width: {% if row.pct > 100 %}100{% else %}{{ row.pct }}{% endif %}%"></div>
+              </div>
+              <span class="text-xs font-semibold
+                {% if row.pct >= 100 %}text-green-500 dark:text-green-400
+                {% elif row.pct >= 70 %}text-blue-500 dark:text-blue-400
+                {% else %}text-red-500 dark:text-red-400{% endif %}">
+                {{ row.pct }}%
+              </span>
+            </div>
+            {% else %}
+            <span class="text-sm text-[#454D60] dark:text-white/20">—</span>
+            {% endif %}
+          </td>
+
+          <!-- Actions -->
+          <td class="px-4 py-4">
+            <div class="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              {% if row.fm %}
+              <a href="{% url 'investment-goal-update' row.fm.year row.fm.month %}"
+                 title="Definir meta"
+                 class="p-1.5 rounded-md text-[#454D60] dark:text-white/30 hover:text-[#0066FF] dark:hover:text-[#0066FF] transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+                </svg>
+              </a>
+              <a href="{% url 'investment-create' row.fm.year row.fm.month %}"
+                 title="Adicionar investimento"
+                 class="p-1.5 rounded-md text-[#454D60] dark:text-white/30 hover:text-green-500 dark:hover:text-green-400 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+              </a>
+              {% else %}
+              <a href="{% url 'month-detail' year row.month %}"
+                 title="Abrir mês"
+                 class="p-1.5 rounded-md text-[#454D60] dark:text-white/30 hover:text-[#0066FF] dark:hover:text-[#0066FF] transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+
+      <!-- Totals footer -->
+      <tfoot>
+        <tr class="bg-gray-50 dark:bg-white/3 border-t-2 border-gray-200 dark:border-white/10">
+          <td class="px-6 py-4 text-sm font-bold text-[#000918] dark:text-white">Total {{ year }}</td>
+          <td class="px-6 py-4 text-right text-sm font-semibold text-[#454D60] dark:text-white/60">{{ total_goal|brl }}</td>
+          <td class="px-6 py-4 text-right text-sm font-bold text-blue-500 dark:text-blue-400">{{ total_invested|brl }}</td>
+          <td class="px-6 py-4 text-right text-sm font-bold
+            {% if total_diff >= 0 %}text-green-500 dark:text-green-400{% else %}text-red-500 dark:text-red-400{% endif %}">
+            {{ total_diff|brl }}
+          </td>
+          <td class="px-6 py-4 text-right text-sm font-bold
+            {% if total_pct and total_pct >= 100 %}text-green-500 dark:text-green-400
+            {% elif total_pct and total_pct >= 70 %}text-blue-500 dark:text-blue-400
+            {% else %}text-[#454D60] dark:text-white/40{% endif %}">
+            {% if total_pct %}{{ total_pct }}%{% else %}—{% endif %}
+          </td>
+          <td class="px-4 py-4"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
