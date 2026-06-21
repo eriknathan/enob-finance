@@ -31,10 +31,8 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8083',
-    'http://127.0.0.1:8083',
-]
+_csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost:8083,http://127.0.0.1:8083')
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_origins.split(',') if o.strip()]
 
 
 # Application definition

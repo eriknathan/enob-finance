@@ -9,14 +9,10 @@ from django.views.generic import CreateView, DeleteView, RedirectView, TemplateV
 
 from app_months.models import FinancialMonth
 
+from app_core.constants import MONTH_NAMES
+
 from .forms import InvestmentForm, InvestmentGoalForm
 from .models import Investment
-
-MONTH_NAMES = {
-    1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
-    5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
-    9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro',
-}
 
 
 def _month_detail_url(year, month):

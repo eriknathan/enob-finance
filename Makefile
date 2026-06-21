@@ -23,8 +23,6 @@ up:
 	docker compose up --build --force-recreate -d
 	@echo "Aguardando os serviços iniciarem..."
 	@sleep 3
-	@echo "Gerando novas migrações (se houver)..."
-	docker compose exec web python manage.py makemigrations
 	@echo "Aplicando migrações no banco de dados..."
 	docker compose exec web python manage.py migrate
 	@echo "Ambiente 100% pronto e rodando!"

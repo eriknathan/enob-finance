@@ -44,11 +44,14 @@ class FinancialMonthTotalsTest(TestCase):
         FixedExpense.objects.create(financial_month=self.fm, description='Aluguel', amount=Decimal('1500'))
         self.assertEqual(self.fm.total_fixed_expenses(), Decimal('1500'))
 
-    def test_total_expenses_aggregates_all_sources(self):
+    def test_total_expenses_is_variable_only(self):
+        from app_cards.models import CreditCard, CardInvoice
         VariableExpense.objects.create(financial_month=self.fm, description='Mercado', amount=Decimal('300'))
         FixedExpense.objects.create(financial_month=self.fm, description='Aluguel', amount=Decimal('1000'))
-        # card invoices and installments: zero if not set
-        self.assertEqual(self.fm.total_expenses(), Decimal('1300'))
+        card = CreditCard.objects.create(user=self.user, name='Nubank', last_digits='1234')
+        CardInvoice.objects.create(financial_month=self.fm, card=card, amount=Decimal('500'))
+        # fixed expenses and card invoices are informational — only variable expenses affect the balance
+        self.assertEqual(self.fm.total_expenses(), Decimal('300'))
 
 
 class BalanceCarryOverTest(TestCase):
@@ -86,6 +89,41 @@ class BalanceCarryOverTest(TestCase):
         Entry.objects.create(financial_month=dec, description='Bônus', amount=Decimal('1000'))
         jan = make_month(self.user, year=2026, month=1)
         self.assertEqual(jan.previous_balance(), Decimal('1000'))
+
+
+class OpeningBalanceTest(TestCase):
+    def setUp(self):
+        self.user = make_user('ob@test.com')
+
+    def test_opening_balance_overrides_auto_carryover(self):
+        jan = make_month(self.user, year=2026, month=1)
+        Entry.objects.create(financial_month=jan, description='Salário', amount=Decimal('3000'))
+        # Without opening_balance, balance = 0 (prev) + 3000 = 3000
+        self.assertEqual(jan.previous_balance(), Decimal('0'))
+
+        jan.opening_balance = Decimal('5000')
+        jan.save()
+        # With opening_balance set, previous_balance returns that value
+        self.assertEqual(jan.previous_balance(), Decimal('5000'))
+        self.assertEqual(jan.current_balance(), Decimal('8000'))
+
+    def test_opening_balance_none_falls_back_to_auto(self):
+        dec = make_month(self.user, year=2025, month=12)
+        Entry.objects.create(financial_month=dec, description='Bônus', amount=Decimal('2000'))
+        jan = make_month(self.user, year=2026, month=1)
+        jan.opening_balance = None
+        jan.save()
+        # Should derive from December's current_balance
+        self.assertEqual(jan.previous_balance(), Decimal('2000'))
+
+    def test_opening_balance_overrides_chained_carryover(self):
+        # Jan exists with a balance, but Feb has manual opening_balance → ignores Jan
+        jan = make_month(self.user, year=2026, month=1)
+        Entry.objects.create(financial_month=jan, description='Salário', amount=Decimal('4000'))
+        feb = make_month(self.user, year=2026, month=2)
+        feb.opening_balance = Decimal('1000')
+        feb.save()
+        self.assertEqual(feb.previous_balance(), Decimal('1000'))
 
 
 class FixedExpenseStatusTest(TestCase):

@@ -60,10 +60,21 @@ class FinancialMonthConfigForm(forms.ModelForm):
         required=False,
         widget=forms.DateInput(attrs={'type': 'date'}),
     )
+    opening_balance = forms.DecimalField(
+        label='Saldo inicial (mês anterior)',
+        required=False,
+        min_value=None,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'step': '0.01',
+            'placeholder': 'Ex: 1500,00 — deixe em branco para calcular automaticamente',
+        }),
+        help_text='Preencha apenas se este for o primeiro mês do histórico e você quiser definir o saldo de abertura manualmente. Nos demais meses, o saldo é calculado automaticamente a partir do mês anterior.',
+    )
 
     class Meta:
         model = FinancialMonth
-        fields = ('start_date', 'end_date')
+        fields = ('start_date', 'end_date', 'opening_balance')
 
 class InvestmentGoalForm(forms.ModelForm):
     class Meta:

@@ -5,18 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import TemplateView
 
+from app_core.constants import MONTH_NAMES as MONTH_NAMES_FULL, MONTH_NAMES_SHORT
 from app_months.models import FinancialMonth
-
-MONTH_NAMES_SHORT = {
-    1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Abr', 5: 'Mai', 6: 'Jun',
-    7: 'Jul', 8: 'Ago', 9: 'Set', 10: 'Out', 11: 'Nov', 12: 'Dez',
-}
-
-MONTH_NAMES_FULL = {
-    1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
-    5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
-    9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro',
-}
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -47,7 +37,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     'month': m,
                     'name': MONTH_NAMES_SHORT[m],
                     'entries': fm.total_entries(),
-                    'expenses': fm.total_expenses(),
+                    'expenses': fm.total_variable_expenses(),
                     'fixed': fm.total_fixed_expenses(),
                     'investments': fm.total_investments(),
                     'balance': fm.current_balance(),

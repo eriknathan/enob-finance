@@ -198,13 +198,14 @@ class FinancialMonthInstallmentAggregationTest(TestCase):
         add_installment(plan, self.fm, 1, Decimal('800'))
         self.assertEqual(self.fm.total_installment_sales(), Decimal('800'))
 
-    def test_installment_payments_count_as_expenses(self):
+    def test_installment_payments_do_not_affect_total_expenses(self):
+        # Installment parcels are informational — total_expenses() = variable + card invoices only
         plan = make_plan(self.user, kind='payment')
         add_installment(plan, self.fm, 1, Decimal('200'))
-        self.assertEqual(self.fm.total_expenses(), Decimal('200'))
+        self.assertEqual(self.fm.total_expenses(), Decimal('0'))
 
-    def test_installment_sales_count_as_income_in_balance(self):
+    def test_installment_sales_do_not_affect_balance(self):
+        # Sales installments are informational — balance is entries - expenses - investments
         plan = make_plan(self.user, kind='sale')
         add_installment(plan, self.fm, 1, Decimal('500'))
-        # balance = 0 (prev) + 0 (entries) + 500 (sales) - 0 (expenses) - 0 (investments)
-        self.assertEqual(self.fm.current_balance(), Decimal('500'))
+        self.assertEqual(self.fm.current_balance(), Decimal('0'))

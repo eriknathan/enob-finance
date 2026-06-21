@@ -5,10 +5,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
 
-MONTH_NAMES = {
-    1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Abr', 5: 'Mai', 6: 'Jun',
-    7: 'Jul', 8: 'Ago', 9: 'Set', 10: 'Out', 11: 'Nov', 12: 'Dez',
-}
+from app_core.constants import MONTH_NAMES_SHORT as MONTH_NAMES
 
 _CURRENCY_FMT = '"R$" #,##0.00;[Red]"R$" -#,##0.00'
 _DATE_FMT = 'DD/MM/YYYY'

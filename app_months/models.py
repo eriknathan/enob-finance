@@ -16,6 +16,9 @@ class FinancialMonth(TimestampedModel):
     year = models.PositiveIntegerField()
     month = models.PositiveIntegerField()
     investment_goal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0'))
+    opening_balance = models.DecimalField(
+        max_digits=12, decimal_places=2, null=True, blank=True,
+    )
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
 
@@ -39,10 +42,6 @@ class FinancialMonth(TimestampedModel):
     def total_fixed_expenses(self):
         result = self.fixed_expenses.aggregate(total=models.Sum('amount'))['total']
         return result or Decimal('0')
-
-    def total_fixed_display(self):
-        """Used in UI to show fixed expenses + card invoices together as requested by user."""
-        return self.total_fixed_expenses() + self.total_card_invoices()
 
     def total_investments(self):
         result = self.investments.aggregate(total=models.Sum('amount'))['total']
@@ -79,16 +78,17 @@ class FinancialMonth(TimestampedModel):
         except Exception:
             return Decimal('0')
 
+    def total_entries_with_carry(self):
+        return self.previous_balance() + self.total_entries()
+
     def total_expenses(self):
-        return (
-            self.total_variable_expenses()
-            + self.total_fixed_expenses()
-            + self.total_card_invoices()
-        )
+        return self.total_variable_expenses()
 
     # ── Balance ───────────────────────────────────────────────────────────────
 
     def previous_balance(self):
+        if self.opening_balance is not None:
+            return self.opening_balance
         prev_year = self.year if self.month > 1 else self.year - 1
         prev_month = self.month - 1 if self.month > 1 else 12
         try:

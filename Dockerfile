@@ -1,4 +1,4 @@
-FROM python:3.14-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -6,6 +6,13 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+
+RUN addgroup --system appgroup \
+    && adduser --system --ingroup appgroup --home /app appuser \
+    && mkdir -p /app/staticfiles \
+    && chown -R appuser:appgroup /app
+
+USER appuser
 
 EXPOSE 8000
 

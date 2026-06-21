@@ -2,13 +2,9 @@ from decimal import Decimal
 
 from django import template
 
-register = template.Library()
+from app_core.constants import MONTH_NAMES  # noqa: F401 — re-exported for templatetag use
 
-MONTH_NAMES = {
-    1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
-    5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
-    9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro',
-}
+register = template.Library()
 
 
 @register.filter

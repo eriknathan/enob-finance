@@ -7,6 +7,8 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, RedirectView, UpdateView
 from django.views.generic.detail import DetailView
 
+from app_core.constants import MONTH_NAMES
+
 from .forms import (
     EntryForm,
     FinancialMonthConfigForm,
@@ -15,15 +17,6 @@ from .forms import (
     VariableExpenseForm,
 )
 from .models import Entry, FinancialMonth, FixedExpense, VariableExpense
-
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-
-MONTH_NAMES = {
-    1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
-    5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
-    9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro',
-}
 
 
 def _month_detail_url(year, month):

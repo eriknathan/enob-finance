@@ -69,11 +69,12 @@
         </svg>
       </span>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-red-500 dark:text-red-400">{{ current_month.total_expenses|brl }}</p>
+    <p class="text-xl sm:text-2xl font-bold text-red-500 dark:text-red-400">{{ current_month.total_variable_expenses|brl }}</p>
+    {% if current_month.total_card_invoices %}
     <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      Var: <span class="font-medium">{{ current_month.total_variable_expenses|brl }}</span>
-      · Fix: <span class="font-medium">{{ current_month.total_fixed_expenses|brl }}</span>
+      + Faturas: <span class="font-medium">{{ current_month.total_card_invoices|brl }}</span>
     </p>
+    {% endif %}
   </div>
 
   <!-- Investimentos -->

@@ -18,15 +18,63 @@
 <div class="max-w-lg">
   <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-6 transition-theme">
 
-    <h1 class="text-xl font-bold text-[#000918] dark:text-white mb-2">Configurar {{ object.month|month_name }} {{ object.year }}</h1>
-    <p class="text-sm text-[#454D60] dark:text-white/60 mb-6">Defina um período específico de início e fim para este mês. Isso é útil se o seu mês financeiro acompanhar a data do seu salário.</p>
+    <h1 class="text-xl font-bold text-[#000918] dark:text-white mb-1">Configurar {{ object.month|month_name }} {{ object.year }}</h1>
+    <p class="text-sm text-[#454D60] dark:text-white/60 mb-6">Período e saldo inicial deste mês.</p>
 
     <form method="post" novalidate>
       {% csrf_token %}
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-5">
 
-        {% include 'components/input.html' with name='start_date' label='Data inicial' type='date' value=form.start_date.value|date:"Y-m-d" errors=form.start_date.errors %}
-        {% include 'components/input.html' with name='end_date' label='Data final' type='date' value=form.end_date.value|date:"Y-m-d" errors=form.end_date.errors %}
+        <!-- Período -->
+        <div>
+          <p class="text-xs font-semibold text-[#454D60] dark:text-white/40 uppercase tracking-widest mb-3">Período do mês</p>
+          <div class="flex flex-col gap-4">
+            {% include 'components/input.html' with name='start_date' label='Data inicial' type='date' value=form.start_date.value|date:"Y-m-d" errors=form.start_date.errors %}
+            {% include 'components/input.html' with name='end_date' label='Data final' type='date' value=form.end_date.value|date:"Y-m-d" errors=form.end_date.errors %}
+          </div>
+        </div>
+
+        <!-- Saldo inicial -->
+        <div class="pt-2 border-t border-gray-100 dark:border-white/8">
+          <p class="text-xs font-semibold text-[#454D60] dark:text-white/40 uppercase tracking-widest mb-1">Saldo de abertura</p>
+          <p class="text-xs text-[#454D60] dark:text-white/40 mb-3">
+            Use este campo apenas para o <strong class="text-[#000918] dark:text-white">primeiro mês do histórico</strong>.
+            A partir do segundo mês, o saldo anterior é calculado automaticamente.
+            Deixe em branco para manter o cálculo automático.
+          </p>
+
+          {% if object.opening_balance is not None %}
+          <div class="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-blue-50 dark:bg-[#0066FF]/10 border border-blue-100 dark:border-[#0066FF]/20">
+            <svg class="w-4 h-4 text-[#0066FF] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="text-xs text-[#0066FF] dark:text-[#00AAFF]">
+              Saldo inicial manual definido: <strong>{{ object.opening_balance|brl }}</strong>. Limpe o campo e salve para voltar ao cálculo automático.
+            </span>
+          </div>
+          {% endif %}
+
+          <div class="flex flex-col gap-1.5">
+            <label for="id_opening_balance" class="text-sm font-medium text-[#000918] dark:text-white">
+              Saldo inicial (R$)
+            </label>
+            <input
+              type="number"
+              name="opening_balance"
+              id="id_opening_balance"
+              step="0.01"
+              placeholder="Ex: 1500,00 — deixe em branco para cálculo automático"
+              value="{% if form.opening_balance.value %}{{ form.opening_balance.value }}{% endif %}"
+              class="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10
+                     text-[#454D60] dark:text-white/80 text-base placeholder-gray-400 dark:placeholder-white/20
+                     focus:border-[#0066FF] focus:ring-2 focus:ring-blue-100 dark:focus:ring-[#0066FF]/20
+                     outline-none transition-all"
+            >
+            {% if form.opening_balance.errors %}
+            <p class="text-xs text-red-500 mt-1">{{ form.opening_balance.errors|join:', ' }}</p>
+            {% endif %}
+          </div>
+        </div>
 
         <div class="flex items-center gap-3 pt-2">
           {% include 'components/button.html' with variant='primary' label='Salvar Configurações' %}
