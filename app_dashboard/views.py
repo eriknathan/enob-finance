@@ -50,6 +50,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     'expenses': fm.total_expenses(),
                     'investments': fm.total_investments(),
                     'balance': fm.current_balance(),
+                    'invoices': fm.total_card_invoices(),
                     'url': reverse('month-detail', kwargs={'year': year, 'month': m}),
                     'is_current': year == today.year and m == today.month,
                     'exists': True,
@@ -62,6 +63,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     'expenses': None,
                     'investments': None,
                     'balance': None,
+                    'invoices': None,
                     'url': reverse('month-detail', kwargs={'year': year, 'month': m}),
                     'is_current': year == today.year and m == today.month,
                     'exists': False,
@@ -72,7 +74,16 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'entries': sum(r['entries'] or Decimal('0') for r in existing),
             'expenses': sum(r['expenses'] or Decimal('0') for r in existing),
             'investments': sum(r['investments'] or Decimal('0') for r in existing),
+            'invoices': sum(r['invoices'] or Decimal('0') for r in existing),
         }
+
+        import json
+        chart_labels = [r['name'] for r in annual_rows]
+        chart_entries = [float(r['entries'] or 0) for r in annual_rows]
+        chart_expenses = [float(r['expenses'] or 0) for r in annual_rows]
+        chart_investments = [float(r['investments'] or 0) for r in annual_rows]
+        chart_balances = [float(r['balance'] or 0) for r in annual_rows]
+        chart_invoices = [float(r['invoices'] or 0) for r in annual_rows]
 
         ctx.update({
             'current_month': current_month,
@@ -83,5 +94,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'next_year': year + 1,
             'annual_rows': annual_rows,
             'annual_totals': annual_totals,
+            'chart_labels': json.dumps(chart_labels),
+            'chart_entries': json.dumps(chart_entries),
+            'chart_expenses': json.dumps(chart_expenses),
+            'chart_investments': json.dumps(chart_investments),
+            'chart_balances': json.dumps(chart_balances),
+            'chart_invoices': json.dumps(chart_invoices),
         })
         return ctx

@@ -44,7 +44,7 @@
       <div class="text-right">
         <p class="text-[10px] text-white/40 uppercase tracking-widest mb-1">Valor</p>
         <p class="text-2xl font-bold
-          {% if object.plan.is_payment %}text-red-300{% else %}text-green-300{% endif %}">
+          {% if object.plan.is_payment %}text-red-300{% elif object.plan.is_loan %}text-orange-300{% else %}text-green-300{% endif %}">
           {{ object.amount|brl }}
         </p>
       </div>
@@ -61,6 +61,9 @@
     <form method="post" novalidate>
       {% csrf_token %}
       <div class="flex flex-col gap-4">
+
+        <!-- Amount -->
+        {% include 'components/input.html' with name='amount' label='Valor da parcela (R$)' type='number' value=form.amount.value errors=form.amount.errors placeholder='0,00' %}
 
         <!-- Status -->
         <div class="flex flex-col gap-1.5">

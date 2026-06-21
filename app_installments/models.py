@@ -10,9 +10,11 @@ from app_months.models import FinancialMonth
 class InstallmentPlan(TimestampedModel):
     KIND_PAYMENT = 'payment'
     KIND_SALE = 'sale'
+    KIND_LOAN = 'loan'
     KIND_CHOICES = [
         (KIND_PAYMENT, 'Pagamento'),
         (KIND_SALE, 'Venda'),
+        (KIND_LOAN, 'Empréstimo'),
     ]
 
     user = models.ForeignKey(
@@ -59,6 +61,10 @@ class InstallmentPlan(TimestampedModel):
     @property
     def is_sale(self):
         return self.kind == self.KIND_SALE
+
+    @property
+    def is_loan(self):
+        return self.kind == self.KIND_LOAN
 
 
 class Installment(TimestampedModel):

@@ -65,6 +65,11 @@ class InvestmentAnnualView(LoginRequiredMixin, TemplateView):
 
         total_pct = round((total_invested / total_goal * 100), 1) if total_goal > 0 else None
 
+        import json
+        chart_labels = [r['month_name'][:3] for r in rows]
+        chart_invested = [float(r['invested'] or 0) for r in rows]
+        chart_goals = [float(r['goal'] or 0) for r in rows]
+
         ctx.update({
             'year': year,
             'rows': rows,
@@ -74,6 +79,9 @@ class InvestmentAnnualView(LoginRequiredMixin, TemplateView):
             'total_pct': total_pct,
             'prev_year': year - 1,
             'next_year': year + 1,
+            'chart_labels': json.dumps(chart_labels),
+            'chart_invested': json.dumps(chart_invested),
+            'chart_goals': json.dumps(chart_goals),
         })
         return ctx
 
@@ -179,4 +187,15 @@ class InvestmentGoalUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['financial_month'] = self.object
+        return ctx
+
+# ── Simulator ────────────────────────────────────────────────────────────────
+
+class InvestmentSimulatorView(LoginRequiredMixin, TemplateView):
+    template_name = 'app_investments/simulator.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        # Valores padrão
+        ctx['default_cdi'] = 10.40
         return ctx

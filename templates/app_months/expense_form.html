@@ -26,6 +26,9 @@
 
         {% include 'components/input.html' with name='description' label='Descrição' value=form.description.value errors=form.description.errors %}
         {% include 'components/input.html' with name='amount' label='Valor (R$)' type='number' value=form.amount.value errors=form.amount.errors placeholder='0,00' %}
+        {% if form.date %}
+          {% include 'components/input.html' with name='date' label='Data' type='date' value=form.date.value|date:"Y-m-d"|default:form.date.value errors=form.date.errors %}
+        {% endif %}
 
         {% if form.status %}
         <div class="flex flex-col gap-1.5">

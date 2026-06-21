@@ -1,7 +1,7 @@
 import io
 
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
 
 MONTH_NAMES = {
@@ -9,7 +9,11 @@ MONTH_NAMES = {
     7: 'Jul', 8: 'Ago', 9: 'Set', 10: 'Out', 11: 'Nov', 12: 'Dez',
 }
 
-_CURRENCY_FMT = '#,##0.00'
+_CURRENCY_FMT = '"R$" #,##0.00;[Red]"R$" -#,##0.00'
+
+def _border():
+    thin = Side(border_style='thin', color='E2E8F0')
+    return Border(left=thin, right=thin, top=thin, bottom=thin)
 
 
 def _dark_fill():
@@ -34,6 +38,7 @@ def _header_row(ws, row_num, headers):
         cell.fill = _dark_fill()
         cell.font = _white_bold()
         cell.alignment = _center()
+        cell.border = _border()
 
 
 def _section_title(ws, row_num, title, n_cols):
@@ -51,6 +56,12 @@ def _section_title(ws, row_num, title, n_cols):
 def _money(ws, row_num, col, value):
     cell = ws.cell(row=row_num, column=col, value=float(value or 0))
     cell.number_format = _CURRENCY_FMT
+    cell.border = _border()
+    return cell
+
+def _text(ws, row_num, col, value):
+    cell = ws.cell(row=row_num, column=col, value=value)
+    cell.border = _border()
     return cell
 
 
@@ -96,8 +107,8 @@ def _build_annual_summary(wb, user):
         goal = fm.investment_goal
         balance = fm.current_balance()
 
-        ws.cell(row=row, column=1, value=fm.year)
-        ws.cell(row=row, column=2, value=MONTH_NAMES[fm.month])
+        _text(ws, row, 1, fm.year).alignment = _center()
+        _text(ws, row, 2, MONTH_NAMES[fm.month]).alignment = _center()
         _money(ws, row, 3, entries)
         _money(ws, row, 4, var)
         _money(ws, row, 5, fixed)
@@ -119,15 +130,17 @@ def _build_annual_summary(wb, user):
         row += 1
 
     # Totals row
-    _section_title(ws, row, 'TOTAL', 2)
-    _money(ws, row, 3, totals['entries'])
-    _money(ws, row, 4, totals['var'])
-    _money(ws, row, 5, totals['fixed'])
-    _money(ws, row, 6, totals['invoices'])
-    _money(ws, row, 7, totals['installments'])
-    _money(ws, row, 8, totals['expenses'])
-    _money(ws, row, 9, totals['invested'])
-    _money(ws, row, 10, totals['goal'])
+    ws.auto_filter.ref = f"A1:K{row-1}"
+    
+    _section_title(ws, row, 'TOTAL ANUAL', 2)
+    _money(ws, row, 3, totals['entries']).font = Font(bold=True, color='16A34A')
+    _money(ws, row, 4, totals['var']).font = Font(bold=True)
+    _money(ws, row, 5, totals['fixed']).font = Font(bold=True)
+    _money(ws, row, 6, totals['invoices']).font = Font(bold=True, color='A855F7')
+    _money(ws, row, 7, totals['installments']).font = Font(bold=True)
+    _money(ws, row, 8, totals['expenses']).font = Font(bold=True, color='EF4444')
+    _money(ws, row, 9, totals['invested']).font = Font(bold=True, color='3B82F6')
+    _money(ws, row, 10, totals['goal']).font = Font(bold=True)
 
 
 # ── Monthly sheets ────────────────────────────────────────────────────────────
@@ -145,10 +158,12 @@ def _build_month_sheet(wb, fm):
     _header_row(ws, row, ['Descrição', 'Valor'])
     row += 1
     for entry in fm.entries.all():
-        ws.cell(row=row, column=1, value=entry.description)
+        _text(ws, row, 1, entry.description)
         _money(ws, row, 2, entry.amount)
         row += 1
-    _money(ws, row, 2, fm.total_entries()).font = Font(bold=True)
+    
+    ws.auto_filter.ref = f"A2:B{row-1}"
+    _money(ws, row, 2, fm.total_entries()).font = Font(bold=True, color='16A34A')
     row += 2
 
     # Gastos Variáveis
@@ -157,10 +172,10 @@ def _build_month_sheet(wb, fm):
     _header_row(ws, row, ['Descrição', 'Valor'])
     row += 1
     for exp in fm.variable_expenses.all():
-        ws.cell(row=row, column=1, value=exp.description)
+        _text(ws, row, 1, exp.description)
         _money(ws, row, 2, exp.amount)
         row += 1
-    _money(ws, row, 2, fm.total_variable_expenses()).font = Font(bold=True)
+    _money(ws, row, 2, fm.total_variable_expenses()).font = Font(bold=True, color='EF4444')
     row += 2
 
     # Despesas Fixas
@@ -169,11 +184,11 @@ def _build_month_sheet(wb, fm):
     _header_row(ws, row, ['Descrição', 'Valor', 'Status'])
     row += 1
     for exp in fm.fixed_expenses.all():
-        ws.cell(row=row, column=1, value=exp.description)
+        _text(ws, row, 1, exp.description)
         _money(ws, row, 2, exp.amount)
-        ws.cell(row=row, column=3, value='Pago' if exp.is_paid else 'Pendente')
+        _text(ws, row, 3, 'Pago' if exp.is_paid else 'Pendente')
         row += 1
-    _money(ws, row, 2, fm.total_fixed_expenses()).font = Font(bold=True)
+    _money(ws, row, 2, fm.total_fixed_expenses()).font = Font(bold=True, color='EF4444')
     row += 2
 
     # Faturas de Cartão
@@ -182,11 +197,11 @@ def _build_month_sheet(wb, fm):
     _header_row(ws, row, ['Cartão', 'Bandeira', 'Valor'])
     row += 1
     for inv in fm.card_invoices.select_related('card').all():
-        ws.cell(row=row, column=1, value=inv.card.name)
-        ws.cell(row=row, column=2, value=inv.card.brand)
+        _text(ws, row, 1, inv.card.name)
+        _text(ws, row, 2, inv.card.brand)
         _money(ws, row, 3, inv.amount)
         row += 1
-    _money(ws, row, 3, fm.total_card_invoices()).font = Font(bold=True)
+    _money(ws, row, 3, fm.total_card_invoices()).font = Font(bold=True, color='A855F7')
     row += 2
 
     # Investimentos
@@ -195,13 +210,13 @@ def _build_month_sheet(wb, fm):
     _header_row(ws, row, ['Onde', 'Valor'])
     row += 1
     for inv in fm.investments.all():
-        ws.cell(row=row, column=1, value=inv.place)
+        _text(ws, row, 1, inv.place)
         _money(ws, row, 2, inv.amount)
         row += 1
-    _money(ws, row, 2, fm.total_investments()).font = Font(bold=True)
+    _money(ws, row, 2, fm.total_investments()).font = Font(bold=True, color='3B82F6')
     if fm.investment_goal:
         row += 1
-        ws.cell(row=row, column=1, value='Meta')
+        _text(ws, row, 1, 'Meta').font = Font(bold=True)
         _money(ws, row, 2, fm.investment_goal)
     row += 2
 
@@ -213,9 +228,9 @@ def _build_month_sheet(wb, fm):
         _header_row(ws, row, ['Plano', 'Tipo', 'Parcela', 'Valor'])
         row += 1
         for inst in installments:
-            ws.cell(row=row, column=1, value=inst.plan.name)
-            ws.cell(row=row, column=2, value=inst.plan.get_kind_display())
-            ws.cell(row=row, column=3, value=f'{inst.number}/{inst.plan.count_total()}')
+            _text(ws, row, 1, inst.plan.name)
+            _text(ws, row, 2, inst.plan.get_kind_display())
+            _text(ws, row, 3, f'{inst.number}/{inst.plan.count_total()}')
             _money(ws, row, 4, inst.amount)
             row += 1
 
@@ -232,10 +247,12 @@ def _build_cards_sheet(wb, user):
 
     cards = Card.objects.filter(user=user).order_by('name')
     for row, card in enumerate(cards, start=2):
-        ws.cell(row=row, column=1, value=card.name)
-        ws.cell(row=row, column=2, value=card.brand)
-        ws.cell(row=row, column=3, value=f'Dia {card.closing_day}')
-        ws.cell(row=row, column=4, value=f'Dia {card.due_day}')
+        _text(ws, row, 1, card.name)
+        _text(ws, row, 2, card.brand)
+        _text(ws, row, 3, f'Dia {card.closing_day}')
+        _text(ws, row, 4, f'Dia {card.due_day}')
+        
+    ws.auto_filter.ref = f"A1:D{row}"
 
 
 # ── Installments sheets ───────────────────────────────────────────────────────
@@ -276,12 +293,12 @@ def _build_installments_sheet(wb, user, kind, sheet_name):
         row += 1
 
         for inst in plan.installments.all():
-            ws.cell(row=row, column=1, value=inst.number)
-            ws.cell(row=row, column=2, value=MONTH_NAMES[inst.financial_month.month])
-            ws.cell(row=row, column=3, value=inst.financial_month.year)
+            _text(ws, row, 1, inst.number)
+            _text(ws, row, 2, MONTH_NAMES[inst.financial_month.month])
+            _text(ws, row, 3, inst.financial_month.year)
             _money(ws, row, 4, inst.amount)
-            ws.cell(row=row, column=5, value='Pago' if inst.is_paid else 'Pendente')
-            ws.cell(row=row, column=6, value=inst.receipt_url or '')
+            _text(ws, row, 5, 'Pago' if inst.is_paid else 'Pendente')
+            _text(ws, row, 6, inst.receipt_url or '')
             row += 1
 
         row += 1

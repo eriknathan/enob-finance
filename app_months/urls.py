@@ -6,6 +6,8 @@ urlpatterns = [
     # Month navigation
     path('', views.MonthCurrentView.as_view(), name='month-current'),
     path('<int:year>/<int:month>/', views.MonthDetailView.as_view(), name='month-detail'),
+    path('<int:year>/<int:month>/config/', views.FinancialMonthConfigUpdateView.as_view(), name='month-config'),
+    path('<int:year>/<int:month>/meta/', views.InvestmentGoalUpdateView.as_view(), name='investment-goal-update'),
 
     # Entry CRUD
     path('<int:year>/<int:month>/entrada/nova/', views.EntryCreateView.as_view(), name='entry-create'),
@@ -21,4 +23,5 @@ urlpatterns = [
     path('<int:year>/<int:month>/despesa-fixa/nova/', views.FixedExpenseCreateView.as_view(), name='fixed-expense-create'),
     path('despesa-fixa/<int:pk>/editar/', views.FixedExpenseUpdateView.as_view(), name='fixed-expense-update'),
     path('despesa-fixa/<int:pk>/excluir/', views.FixedExpenseDeleteView.as_view(), name='fixed-expense-delete'),
+    path('despesa-fixa/<int:pk>/toggle/', views.FixedExpenseToggleStatusView.as_view(), name='fixed-expense-toggle'),
 ]

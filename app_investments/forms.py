@@ -8,14 +8,16 @@ from .models import Investment
 class InvestmentForm(forms.ModelForm):
     class Meta:
         model = Investment
-        fields = ('place', 'amount')
+        fields = ('place', 'amount', 'date')
         labels = {
-            'place': 'Onde foi investido',
+            'place': 'Local',
             'amount': 'Valor (R$)',
+            'date': 'Data',
         }
         widgets = {
-            'place': forms.TextInput(attrs={'placeholder': 'Ex: Nubank, Tesouro Selic, XP…'}),
+            'place': forms.TextInput(attrs={'placeholder': 'Ex: Tesouro Direto, CDB…'}),
             'amount': forms.NumberInput(attrs={'placeholder': '0,00', 'step': '0.01', 'min': '0.01'}),
+            'date': forms.DateInput(attrs={'type': 'date'}),
         }
 
 

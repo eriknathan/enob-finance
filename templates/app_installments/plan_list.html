@@ -67,4 +67,16 @@
 </div>
 {% endif %}
 
+{% if loans %}
+<div class="mb-8">
+  <div class="flex items-center gap-2 mb-4">
+    <span class="px-2.5 py-0.5 rounded-full bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-semibold">Empréstimos</span>
+    <span class="text-xs text-[#454D60] dark:text-white/40">{{ loans|length }} plano{{ loans|length|pluralize }}</span>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    {% for plan in loans %}{% include 'app_installments/_plan_card.html' %}{% endfor %}
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}

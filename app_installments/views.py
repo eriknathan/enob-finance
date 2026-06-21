@@ -9,7 +9,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, U
 
 from app_months.models import FinancialMonth
 
-from .forms import InstallmentPayForm, InstallmentPlanCreateForm
+from .forms import InstallmentPayForm, InstallmentPlanCreateForm, InstallmentPlanUpdateForm
 from .models import Installment, InstallmentPlan
 
 
@@ -26,6 +26,7 @@ class InstallmentPlanListView(LoginRequiredMixin, ListView):
         plans = self.get_queryset()
         ctx['payments'] = plans.filter(kind=InstallmentPlan.KIND_PAYMENT)
         ctx['sales'] = plans.filter(kind=InstallmentPlan.KIND_SALE)
+        ctx['loans'] = plans.filter(kind=InstallmentPlan.KIND_LOAN)
         return ctx
 
 
@@ -87,6 +88,27 @@ class InstallmentPlanCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['form_title'] = 'Novo Plano de Parcelamento'
+        return ctx
+
+
+class InstallmentPlanUpdateView(LoginRequiredMixin, UpdateView):
+    model = InstallmentPlan
+    form_class = InstallmentPlanUpdateForm
+    template_name = 'app_installments/plan_update_form.html'
+
+    def get_queryset(self):
+        return InstallmentPlan.objects.filter(user=self.request.user)
+
+    def form_valid(self, form):
+        messages.success(self.request, f'Plano "{form.instance.name}" atualizado.')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('installment-detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['form_title'] = 'Editar Plano de Parcelamento'
         return ctx
 
 

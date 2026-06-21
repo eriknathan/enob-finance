@@ -7,7 +7,13 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, RedirectView, UpdateView
 from django.views.generic.detail import DetailView
 
-from .forms import EntryForm, FixedExpenseForm, VariableExpenseForm
+from .forms import (
+    EntryForm,
+    FinancialMonthConfigForm,
+    FixedExpenseForm,
+    InvestmentGoalForm,
+    VariableExpenseForm,
+)
 from .models import Entry, FinancialMonth, FixedExpense, VariableExpense
 
 
@@ -25,26 +31,15 @@ def _month_detail_url(year, month):
 
 
 def _carousel_months(current_year, current_month):
-    """Returns list of (year, month, name) for the carousel: Jan/2026 → current + 1 month."""
-    start_year, start_month = 2026, 1
-    today = date.today()
-    # End one month ahead of today
-    end_month = today.month + 1 if today.month < 12 else 1
-    end_year = today.year if today.month < 12 else today.year + 1
-
+    """Returns list of (year, month, name) for the carousel: Jan to Dec of the selected year."""
     months = []
-    y, m = start_year, start_month
-    while (y, m) <= (end_year, end_month):
+    for m in range(1, 13):
         months.append({
-            'year': y,
+            'year': current_year,
             'month': m,
             'name': MONTH_NAMES[m],
-            'active': y == current_year and m == current_month,
+            'active': m == current_month,
         })
-        m += 1
-        if m > 12:
-            m = 1
-            y += 1
     return months
 
 
@@ -120,8 +115,6 @@ class MonthDetailView(LoginRequiredMixin, DetailView):
             'fixed_expenses': fm.fixed_expenses.all(),
             'card_invoices': fm.card_invoices.select_related('card').all(),
             'investments': fm.investments.all(),
-            'payment_installments': installments_qs.filter(plan__kind='payment'),
-            'sale_installments': installments_qs.filter(plan__kind='sale'),
         })
         return ctx
 
@@ -274,3 +267,67 @@ class FixedExpenseDeleteView(_OwnedMixin, DeleteView):
         ctx['cancel_url'] = self.get_success_url()
         ctx['item_label'] = f'Despesa fixa: {self.object.description}'
         return ctx
+
+
+class FixedExpenseToggleStatusView(_OwnedMixin, RedirectView):
+    def post(self, request, *args, **kwargs):
+        expense = get_object_or_404(FixedExpense, pk=self.kwargs['pk'], financial_month__user=request.user)
+        expense.status = FixedExpense.STATUS_UNPAID if expense.status == FixedExpense.STATUS_PAID else FixedExpense.STATUS_PAID
+        expense.save()
+        messages.success(request, f'Status de "{expense.description}" atualizado.')
+        return super().post(request, *args, **kwargs)
+
+    def get_redirect_url(self, *args, **kwargs):
+        expense = get_object_or_404(FixedExpense, pk=self.kwargs['pk'], financial_month__user=self.request.user)
+        return _month_detail_url(expense.financial_month.year, expense.financial_month.month)
+
+
+class FinancialMonthConfigUpdateView(LoginRequiredMixin, UpdateView):
+    model = FinancialMonth
+    form_class = FinancialMonthConfigForm
+    template_name = 'app_months/month_config_form.html'
+
+    def get_object(self, queryset=None):
+        from django.shortcuts import get_object_or_404
+        return get_object_or_404(
+            FinancialMonth,
+            user=self.request.user,
+            year=self.kwargs['year'],
+            month=self.kwargs['month']
+        )
+
+    def get_success_url(self):
+        return reverse('month-detail', kwargs={
+            'year': self.object.year,
+            'month': self.object.month,
+        })
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Período do mês atualizado com sucesso.')
+        return super().form_valid(form)
+
+class InvestmentGoalUpdateView(LoginRequiredMixin, UpdateView):
+    model = FinancialMonth
+    form_class = InvestmentGoalForm
+    template_name = 'app_months/investment_goal_form.html'
+
+    def get_object(self, queryset=None):
+        from django.shortcuts import get_object_or_404
+        return get_object_or_404(
+            FinancialMonth,
+            user=self.request.user,
+            year=self.kwargs['year'],
+            month=self.kwargs['month']
+        )
+
+    def get_success_url(self):
+        return reverse('month-detail', kwargs={
+            'year': self.object.year,
+            'month': self.object.month,
+        })
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Meta de investimento atualizada.')
+        return super().form_valid(form)
+
+

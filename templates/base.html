@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +9,10 @@
   <script>
     (function () {
       const t = localStorage.getItem('theme');
-      if (t === 'light') {
-        document.documentElement.classList.remove('dark');
-      } else {
+      if (t === 'dark') {
         document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
       }
     })();
   </script>
@@ -33,6 +33,15 @@
             'blue-sm':  '0 4px 14px 0 rgba(0,102,255,0.25)',
             'blue-md':  '0 8px 24px 0 rgba(0,102,255,0.40)',
           },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: 0, transform: 'translateY(10px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            }
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.4s ease-out forwards',
+          }
         },
       },
     }
@@ -44,14 +53,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --scrollbar-thumb: #CBD5E1;
+      --scrollbar-hover: #94A3B8;
+    }
+    .dark {
+      --scrollbar-thumb: #454D60;
+      --scrollbar-hover: #0066FF;
+    }
     * { font-family: 'Sora', sans-serif; }
     /* Smooth theme transitions */
     body, .transition-theme { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+    
+    /* =========================================
+       PREMIUM DARK MODE ENHANCEMENTS
+       ========================================= */
+    .dark body {
+      background-image: 
+        radial-gradient(circle at 0% 0%, rgba(0, 102, 255, 0.08) 0, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.06) 0, transparent 50%);
+      background-attachment: fixed;
+    }
+    
+    /* Glassmorphism for all elevated cards */
+    .dark .dark\:bg-\[\#0A1428\] {
+      background-color: rgba(10, 20, 40, 0.65) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5), inset 0 1px 0 0 rgba(255,255,255,0.05);
+    }
+    
+    /* Soften borders slightly */
+    .dark .dark\:border-white\\/8 {
+      border-color: rgba(255, 255, 255, 0.05) !important;
+    }
+
     /* Scrollbar styling */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #454D60; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #0066FF; }
+    ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
   </style>
 
   {% block extra_head %}{% endblock %}
@@ -74,8 +115,13 @@
     <!-- Content wrapper -->
     <div class="flex-1 flex flex-col lg:ml-64 min-w-0">
 
-      <!-- Topbar -->
-      {% include 'components/topbar.html' %}
+      <!-- Mobile header -->
+      <div class="lg:hidden flex items-center justify-between px-6 py-4 bg-white dark:bg-[#0A1428] border-b border-gray-200 dark:border-white/8 transition-theme">
+        <span class="text-base font-bold bg-gradient-to-r from-[#0066FF] to-[#00AAFF] bg-clip-text text-transparent tracking-tight">EnobFinance</span>
+        <button onclick="openMobileNav()" class="p-2 -mr-2 text-[#454D60] dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
 
       <!-- Flash messages -->
       {% if messages %}
@@ -93,7 +139,15 @@
       {% endif %}
 
       <!-- Page content -->
-      <main class="flex-1 p-6 max-w-screen-2xl w-full mx-auto">
+      <main class="flex-1 p-6 max-w-screen-2xl w-full mx-auto animate-fade-up">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-2 text-sm">
+            {% block breadcrumb %}{% endblock %}
+          </div>
+          <div class="flex items-center gap-2">
+            {% block topbar_actions %}{% endblock %}
+          </div>
+        </div>
         {% block content %}{% endblock %}
       </main>
 
@@ -130,12 +184,8 @@
 
     function updateThemeIcon() {
       const isDark = document.documentElement.classList.contains('dark');
-      const sunEl  = document.getElementById('icon-sun');
-      const moonEl = document.getElementById('icon-moon');
-      if (sunEl && moonEl) {
-        sunEl.classList.toggle('hidden', isDark);
-        moonEl.classList.toggle('hidden', !isDark);
-      }
+      document.querySelectorAll('.icon-sun').forEach(el => el.classList.toggle('hidden', isDark));
+      document.querySelectorAll('.icon-moon').forEach(el => el.classList.toggle('hidden', !isDark));
     }
 
     function openMobileNav() {

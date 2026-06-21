@@ -7,6 +7,9 @@ urlpatterns = [
     path('', views.InvestmentCurrentView.as_view(), name='investment-annual'),
     path('<int:year>/', views.InvestmentAnnualView.as_view(), name='investment-annual-year'),
 
+    # Simulator
+    path('simulador/', views.InvestmentSimulatorView.as_view(), name='investment-simulator'),
+
     # Investment CRUD
     path('meses/<int:year>/<int:month>/novo/', views.InvestmentCreateView.as_view(), name='investment-create'),
     path('<int:pk>/editar/', views.InvestmentUpdateView.as_view(), name='investment-update'),

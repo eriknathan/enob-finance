@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 from app_core.models import TimestampedModel
 
@@ -15,6 +16,8 @@ class FinancialMonth(TimestampedModel):
     year = models.PositiveIntegerField()
     month = models.PositiveIntegerField()
     investment_goal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0'))
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
 
     class Meta:
         unique_together = ('user', 'year', 'month')
@@ -63,12 +66,20 @@ class FinancialMonth(TimestampedModel):
         except Exception:
             return Decimal('0')
 
+    def total_installment_loans(self):
+        try:
+            result = self.installments.filter(
+                plan__kind='loan'
+            ).aggregate(total=models.Sum('amount'))['total']
+            return result or Decimal('0')
+        except Exception:
+            return Decimal('0')
+
     def total_expenses(self):
         return (
             self.total_variable_expenses()
             + self.total_fixed_expenses()
             + self.total_card_invoices()
-            + self.total_installment_payments()
         )
 
     # ── Balance ───────────────────────────────────────────────────────────────
@@ -86,7 +97,6 @@ class FinancialMonth(TimestampedModel):
         return (
             self.previous_balance()
             + self.total_entries()
-            + self.total_installment_sales()
             - self.total_expenses()
             - self.total_investments()
         )
@@ -100,6 +110,7 @@ class Entry(TimestampedModel):
     )
     description = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
+    date = models.DateField(default=timezone.now)
 
     class Meta:
         ordering = ('-created_at',)
@@ -116,6 +127,7 @@ class VariableExpense(TimestampedModel):
     )
     description = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
+    date = models.DateField(default=timezone.now)
 
     class Meta:
         ordering = ('-created_at',)

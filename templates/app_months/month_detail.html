@@ -15,18 +15,37 @@
 
 {% include 'components/month_carousel.html' %}
 
+<!-- Configuração de período -->
+<div class="flex items-center justify-between mb-4">
+  <div class="text-sm font-medium text-[#454D60] dark:text-white/40">
+    {% if financial_month.start_date and financial_month.end_date %}
+      Período: <span class="text-[#000918] dark:text-white">{{ financial_month.start_date|date:"d/m/Y" }} a {{ financial_month.end_date|date:"d/m/Y" }}</span>
+    {% else %}
+      Período: <span class="text-[#000918] dark:text-white">Padrão do mês</span>
+    {% endif %}
+  </div>
+  <a href="{% url 'month-config' financial_month.year financial_month.month %}"
+     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-50 dark:bg-white/5 text-[#454D60] dark:text-white/60 hover:text-[#0066FF] hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border border-gray-200 dark:border-white/10">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+    </svg>
+    Configurar Período
+  </a>
+</div>
+
 <!-- Summary cards -->
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 mb-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 mb-6">
 
   <!-- Saldo balance card -->
-  <div class="col-span-2 md:col-span-3 lg:col-span-3">
+  <div class="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-2">
     <div class="rounded-2xl bg-gradient-to-br from-[#0A1428] to-[#000918]
                 text-white p-5 shadow-xl border border-white/8 h-full relative overflow-hidden">
       <div class="absolute inset-0 pointer-events-none"
            style="background:radial-gradient(60% 80% at 0% 0%, rgba(0,102,255,0.15), transparent)"></div>
       <div class="relative">
         <p class="text-[10px] text-white/40 font-medium uppercase tracking-widest mb-1">Saldo atual</p>
-        <p class="text-3xl font-bold tracking-tight {{ financial_month.current_balance|balance_color }}">
+        <p class="text-3xl sm:text-4xl font-bold tracking-tight {{ financial_month.current_balance|balance_color }}">
           {{ financial_month.current_balance|brl }}
         </p>
         {% if financial_month.previous_balance %}
@@ -39,35 +58,115 @@
   </div>
 
   <!-- Stat cards -->
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-theme">
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
     <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest mb-1">Entradas</p>
-    <p class="text-xl font-bold text-green-600 dark:text-green-400">{{ financial_month.total_entries|brl }}</p>
+    <p class="text-lg sm:text-xl font-bold text-green-600 dark:text-green-400">{{ financial_month.total_entries|brl }}</p>
   </div>
 
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-theme">
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
     <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest mb-1">Gastos Var.</p>
-    <p class="text-xl font-bold text-red-500 dark:text-red-400">{{ financial_month.total_variable_expenses|brl }}</p>
+    <p class="text-lg sm:text-xl font-bold text-red-500 dark:text-red-400">{{ financial_month.total_variable_expenses|brl }}</p>
   </div>
 
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-theme">
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
     <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest mb-1">Despesas Fixas</p>
-    <p class="text-xl font-bold text-orange-500 dark:text-orange-400">{{ financial_month.total_fixed_expenses|brl }}</p>
+    <p class="text-lg sm:text-xl font-bold text-orange-500 dark:text-orange-400">{{ financial_month.total_fixed_expenses|brl }}</p>
   </div>
 
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-theme">
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
     <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest mb-1">Investido</p>
-    <p class="text-xl font-bold text-blue-500 dark:text-blue-400">{{ financial_month.total_investments|brl }}</p>
+    <p class="text-lg sm:text-xl font-bold text-blue-500 dark:text-blue-400">{{ financial_month.total_investments|brl }}</p>
   </div>
 
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-theme">
+  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
     <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest mb-1">Faturas</p>
-    <p class="text-xl font-bold text-purple-500 dark:text-purple-400">{{ financial_month.total_card_invoices|brl }}</p>
+    <p class="text-lg sm:text-xl font-bold text-purple-500 dark:text-purple-400">{{ financial_month.total_card_invoices|brl }}</p>
   </div>
 
 </div>
 
 <!-- Main content grid -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+  <!-- Despesas Fixas -->
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm transition-theme lg:col-span-2">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/8">
+      <div>
+        <h2 class="text-base font-semibold text-[#000918] dark:text-white">Despesas Fixas</h2>
+        <p class="text-xs text-[#454D60] dark:text-white/40 mt-0.5">
+          Total: <span class="text-orange-500 dark:text-orange-400 font-semibold">{{ financial_month.total_fixed_expenses|brl }}</span>
+        </p>
+      </div>
+      <a href="{% url 'fixed-expense-create' financial_month.year financial_month.month %}"
+         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+                bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white shadow-blue-sm
+                hover:shadow-blue-md transition-all">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Adicionar
+      </a>
+    </div>
+
+    {% if fixed_expenses %}
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-100 dark:bg-black/40">
+            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Descrição</th>
+            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Valor</th>
+            <th class="px-6 py-2.5 text-center text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Status</th>
+            <th class="px-4 py-2.5"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+          {% for expense in fixed_expenses %}
+          <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors group">
+            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">{{ expense.description }}</td>
+            <td class="px-6 py-3 text-sm font-semibold text-orange-500 dark:text-orange-400 text-right">{{ expense.amount|brl }}</td>
+            <td class="px-6 py-3 text-center">
+              <form method="post" action="{% url 'fixed-expense-toggle' expense.pk %}" class="inline-block m-0 p-0">
+                {% csrf_token %}
+                <button type="submit" class="hover:opacity-80 transition-opacity focus:outline-none rounded-full cursor-pointer" title="Clique para alterar o status">
+                  {% include 'components/status_pill.html' with status=expense.status %}
+                </button>
+              </form>
+            </td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                <a href="{% url 'fixed-expense-update' expense.pk %}"
+                   class="p-1 rounded-md text-[#454D60] dark:text-white/30 hover:text-[#0066FF] dark:hover:text-[#0066FF] transition-colors">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </a>
+                <a href="{% url 'fixed-expense-delete' expense.pk %}"
+                   class="p-1 rounded-md text-[#454D60] dark:text-white/30 hover:text-red-500 dark:hover:text-red-400 transition-colors">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="px-6 py-12 flex flex-col items-center justify-center text-center">
+      <div class="w-12 h-12 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-gray-400 dark:text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+      </div>
+      <p class="text-sm font-medium text-[#000918] dark:text-white/60 mb-1">Nada por aqui ainda</p>
+      <p class="text-xs text-[#454D60] dark:text-white/30">Nenhuma despesa fixa registrada.</p>
+    </div>
+    {% endif %}
+  </div>
+
+
 
   <!-- Entradas -->
   <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm transition-theme">
@@ -93,16 +192,19 @@
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="bg-[#000918] dark:bg-black/40">
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Descrição</th>
-            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Valor</th>
+          <tr class="bg-gray-100 dark:bg-black/40">
+            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Descrição</th>
+            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Valor</th>
             <th class="px-4 py-2.5"></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50 dark:divide-white/5">
           {% for entry in entries %}
           <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors group">
-            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">{{ entry.description }}</td>
+            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">
+              <div>{{ entry.description }}</div>
+              <div class="text-[10px] text-[#454D60] dark:text-white/40 mt-0.5">{{ entry.date|date:"d/m/Y" }}</div>
+            </td>
             <td class="px-6 py-3 text-sm font-semibold text-green-600 dark:text-green-400 text-right">{{ entry.amount|brl }}</td>
             <td class="px-4 py-3">
               <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
@@ -126,8 +228,14 @@
       </table>
     </div>
     {% else %}
-    <div class="px-6 py-8 text-center">
-      <p class="text-sm text-[#454D60] dark:text-white/30">Nenhuma entrada registrada.</p>
+    <div class="px-6 py-12 flex flex-col items-center justify-center text-center">
+      <div class="w-12 h-12 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-gray-400 dark:text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+      </div>
+      <p class="text-sm font-medium text-[#000918] dark:text-white/60 mb-1">Nada por aqui ainda</p>
+      <p class="text-xs text-[#454D60] dark:text-white/30">Nenhuma entrada registrada.</p>
     </div>
     {% endif %}
   </div>
@@ -156,16 +264,19 @@
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="bg-[#000918] dark:bg-black/40">
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Descrição</th>
-            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Valor</th>
+          <tr class="bg-gray-100 dark:bg-black/40">
+            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Descrição</th>
+            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Valor</th>
             <th class="px-4 py-2.5"></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50 dark:divide-white/5">
           {% for expense in variable_expenses %}
           <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors group">
-            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">{{ expense.description }}</td>
+            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">
+              <div>{{ expense.description }}</div>
+              <div class="text-[10px] text-[#454D60] dark:text-white/40 mt-0.5">{{ expense.date|date:"d/m/Y" }}</div>
+            </td>
             <td class="px-6 py-3 text-sm font-semibold text-red-500 dark:text-red-400 text-right">{{ expense.amount|brl }}</td>
             <td class="px-4 py-3">
               <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
@@ -189,8 +300,14 @@
       </table>
     </div>
     {% else %}
-    <div class="px-6 py-8 text-center">
-      <p class="text-sm text-[#454D60] dark:text-white/30">Nenhum gasto variável registrado.</p>
+    <div class="px-6 py-12 flex flex-col items-center justify-center text-center">
+      <div class="w-12 h-12 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-gray-400 dark:text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+      </div>
+      <p class="text-sm font-medium text-[#000918] dark:text-white/60 mb-1">Nada por aqui ainda</p>
+      <p class="text-xs text-[#454D60] dark:text-white/30">Nenhum gasto variável registrado.</p>
     </div>
     {% endif %}
   </div>
@@ -238,16 +355,19 @@
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="bg-[#000918] dark:bg-black/40">
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Onde</th>
-            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Valor</th>
+          <tr class="bg-gray-100 dark:bg-black/40">
+            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Onde</th>
+            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Valor</th>
             <th class="px-4 py-2.5"></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50 dark:divide-white/5">
           {% for inv in investments %}
           <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors group">
-            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">{{ inv.place }}</td>
+            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">
+              <div>{{ inv.place }}</div>
+              <div class="text-[10px] text-[#454D60] dark:text-white/40 mt-0.5">{{ inv.date|date:"d/m/Y" }}</div>
+            </td>
             <td class="px-6 py-3 text-sm font-semibold text-blue-500 dark:text-blue-400 text-right">{{ inv.amount|brl }}</td>
             <td class="px-4 py-3">
               <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
@@ -271,8 +391,14 @@
       </table>
     </div>
     {% else %}
-    <div class="px-6 py-8 text-center">
-      <p class="text-sm text-[#454D60] dark:text-white/30">Nenhum investimento registrado.</p>
+    <div class="px-6 py-12 flex flex-col items-center justify-center text-center">
+      <div class="w-12 h-12 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-gray-400 dark:text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+      </div>
+      <p class="text-sm font-medium text-[#000918] dark:text-white/60 mb-1">Nada por aqui ainda</p>
+      <p class="text-xs text-[#454D60] dark:text-white/30">Nenhum investimento registrado.</p>
     </div>
     {% endif %}
   </div>
@@ -300,10 +426,10 @@
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="bg-[#000918] dark:bg-black/40">
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Cartão</th>
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Bandeira</th>
-            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Valor</th>
+          <tr class="bg-gray-100 dark:bg-black/40">
+            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Cartão</th>
+            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Bandeira</th>
+            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Valor</th>
             <th class="px-4 py-2.5"></th>
           </tr>
         </thead>
@@ -335,203 +461,14 @@
       </table>
     </div>
     {% else %}
-    <div class="px-6 py-8 text-center">
-      <p class="text-sm text-[#454D60] dark:text-white/30">Nenhuma fatura registrada.</p>
-    </div>
-    {% endif %}
-  </div>
-
-  <!-- Parcelamentos -->
-  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm transition-theme lg:col-span-2">
-    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/8">
-      <div>
-        <h2 class="text-base font-semibold text-[#000918] dark:text-white">Parcelamentos</h2>
-        <div class="flex items-center gap-3 mt-0.5">
-          {% if payment_installments %}
-          <p class="text-xs text-[#454D60] dark:text-white/40">
-            Pagamentos: <span class="text-red-500 dark:text-red-400 font-semibold">{{ financial_month.total_installment_payments|brl }}</span>
-          </p>
-          {% endif %}
-          {% if sale_installments %}
-          <p class="text-xs text-[#454D60] dark:text-white/40">
-            Vendas: <span class="text-green-600 dark:text-green-400 font-semibold">{{ financial_month.total_installment_sales|brl }}</span>
-          </p>
-          {% endif %}
-        </div>
-      </div>
-      <a href="{% url 'installment-list' %}"
-         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
-                bg-gray-50 dark:bg-white/5 text-[#454D60] dark:text-white/50
-                hover:bg-gray-100 dark:hover:bg-white/8 transition-all border border-gray-200 dark:border-white/10">
-        Ver todos
-      </a>
-    </div>
-
-    {% if payment_installments or sale_installments %}
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead>
-          <tr class="bg-[#000918] dark:bg-black/40">
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Plano</th>
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest w-16">Parcela</th>
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Tipo</th>
-            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Valor</th>
-            <th class="px-6 py-2.5 text-center text-[10px] font-semibold text-white/60 uppercase tracking-widest">Status</th>
-            <th class="px-4 py-2.5 text-center text-[10px] font-semibold text-white/60 uppercase tracking-widest">Ação</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50 dark:divide-white/5">
-          {% for inst in sale_installments %}
-          <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors {% if inst.is_paid %}opacity-60{% endif %}">
-            <td class="px-6 py-3">
-              <a href="{% url 'installment-detail' inst.plan.pk %}"
-                 class="text-sm font-medium text-[#000918] dark:text-white/80
-                        hover:text-[#0066FF] dark:hover:text-[#00AAFF] transition-colors">
-                {{ inst.plan.name }}
-              </a>
-            </td>
-            <td class="px-6 py-3">
-              <span class="text-sm font-mono text-[#454D60] dark:text-white/40">
-                {{ inst.number }}/{{ inst.plan.count_total }}
-              </span>
-            </td>
-            <td class="px-6 py-3">
-              <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-semibold
-                           bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400">
-                Venda
-              </span>
-            </td>
-            <td class="px-6 py-3 text-sm font-semibold text-green-600 dark:text-green-400 text-right">
-              {{ inst.amount|brl }}
-            </td>
-            <td class="px-6 py-3 text-center">
-              {% include 'components/status_pill.html' with status=inst.status %}
-            </td>
-            <td class="px-4 py-3 text-center">
-              <a href="{% url 'installment-pay' inst.pk %}"
-                 class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all
-                 {% if inst.is_paid %}
-                   bg-gray-100 dark:bg-white/5 text-[#454D60] dark:text-white/40
-                 {% else %}
-                   bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white
-                 {% endif %}">
-                {% if inst.is_paid %}Editar{% else %}Pagar{% endif %}
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-          {% for inst in payment_installments %}
-          <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors {% if inst.is_paid %}opacity-60{% endif %}">
-            <td class="px-6 py-3">
-              <a href="{% url 'installment-detail' inst.plan.pk %}"
-                 class="text-sm font-medium text-[#000918] dark:text-white/80
-                        hover:text-[#0066FF] dark:hover:text-[#00AAFF] transition-colors">
-                {{ inst.plan.name }}
-              </a>
-            </td>
-            <td class="px-6 py-3">
-              <span class="text-sm font-mono text-[#454D60] dark:text-white/40">
-                {{ inst.number }}/{{ inst.plan.count_total }}
-              </span>
-            </td>
-            <td class="px-6 py-3">
-              <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-semibold
-                           bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400">
-                Pagamento
-              </span>
-            </td>
-            <td class="px-6 py-3 text-sm font-semibold text-red-500 dark:text-red-400 text-right">
-              {{ inst.amount|brl }}
-            </td>
-            <td class="px-6 py-3 text-center">
-              {% include 'components/status_pill.html' with status=inst.status %}
-            </td>
-            <td class="px-4 py-3 text-center">
-              <a href="{% url 'installment-pay' inst.pk %}"
-                 class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all
-                 {% if inst.is_paid %}
-                   bg-gray-100 dark:bg-white/5 text-[#454D60] dark:text-white/40
-                 {% else %}
-                   bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white
-                 {% endif %}">
-                {% if inst.is_paid %}Editar{% else %}Pagar{% endif %}
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-    <div class="px-6 py-8 text-center">
-      <p class="text-sm text-[#454D60] dark:text-white/30">Nenhum parcelamento neste mês.</p>
-    </div>
-    {% endif %}
-  </div>
-
-  <!-- Despesas Fixas -->
-  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm transition-theme lg:col-span-2">
-    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/8">
-      <div>
-        <h2 class="text-base font-semibold text-[#000918] dark:text-white">Despesas Fixas</h2>
-        <p class="text-xs text-[#454D60] dark:text-white/40 mt-0.5">
-          Total: <span class="text-orange-500 dark:text-orange-400 font-semibold">{{ financial_month.total_fixed_expenses|brl }}</span>
-        </p>
-      </div>
-      <a href="{% url 'fixed-expense-create' financial_month.year financial_month.month %}"
-         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
-                bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white shadow-blue-sm
-                hover:shadow-blue-md transition-all">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+    <div class="px-6 py-12 flex flex-col items-center justify-center text-center">
+      <div class="w-12 h-12 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-3">
+        <svg class="w-6 h-6 text-gray-400 dark:text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
         </svg>
-        Adicionar
-      </a>
-    </div>
-
-    {% if fixed_expenses %}
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead>
-          <tr class="bg-[#000918] dark:bg-black/40">
-            <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Descrição</th>
-            <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Valor</th>
-            <th class="px-6 py-2.5 text-center text-[10px] font-semibold text-white/60 uppercase tracking-widest">Status</th>
-            <th class="px-4 py-2.5"></th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50 dark:divide-white/5">
-          {% for expense in fixed_expenses %}
-          <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors group">
-            <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">{{ expense.description }}</td>
-            <td class="px-6 py-3 text-sm font-semibold text-orange-500 dark:text-orange-400 text-right">{{ expense.amount|brl }}</td>
-            <td class="px-6 py-3 text-center">
-              {% include 'components/status_pill.html' with status=expense.status %}
-            </td>
-            <td class="px-4 py-3">
-              <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
-                <a href="{% url 'fixed-expense-update' expense.pk %}"
-                   class="p-1 rounded-md text-[#454D60] dark:text-white/30 hover:text-[#0066FF] dark:hover:text-[#0066FF] transition-colors">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                  </svg>
-                </a>
-                <a href="{% url 'fixed-expense-delete' expense.pk %}"
-                   class="p-1 rounded-md text-[#454D60] dark:text-white/30 hover:text-red-500 dark:hover:text-red-400 transition-colors">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                  </svg>
-                </a>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-    <div class="px-6 py-8 text-center">
-      <p class="text-sm text-[#454D60] dark:text-white/30">Nenhuma despesa fixa registrada.</p>
+      </div>
+      <p class="text-sm font-medium text-[#000918] dark:text-white/60 mb-1">Nada por aqui ainda</p>
+      <p class="text-xs text-[#454D60] dark:text-white/30">Nenhuma fatura registrada.</p>
     </div>
     {% endif %}
   </div>

@@ -65,18 +65,24 @@
   </div>
 </div>
 
-<!-- Monthly table -->
+<!-- Monthly table & Chart -->
 <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm overflow-hidden transition-theme">
+  
+  <!-- Chart Container -->
+  <div class="px-6 py-6 border-b border-gray-100 dark:border-white/8 relative w-full h-[300px] lg:h-[350px]">
+    <canvas id="investmentsChart"></canvas>
+  </div>
+
   <div class="overflow-x-auto">
     <table class="w-full">
       <thead>
-        <tr class="bg-[#000918] dark:bg-black/40">
-          <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-white/60 uppercase tracking-widest">Mês</th>
-          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Meta</th>
-          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Investido</th>
-          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">Diferença</th>
-          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-white/60 uppercase tracking-widest">% Meta</th>
-          <th class="px-4 py-2.5 text-center text-[10px] font-semibold text-white/60 uppercase tracking-widest">Ações</th>
+        <tr class="bg-gray-100 dark:bg-black/40">
+          <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Mês</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Meta</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Investido</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Diferença</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">% Meta</th>
+          <th class="px-4 py-2.5 text-center text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Ações</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-50 dark:divide-white/5">
@@ -199,4 +205,81 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('investmentsChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    
+    const isDark = document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+    const textColor = isDark ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 9, 24, 0.6)';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {{ chart_labels|safe }},
+        datasets: [
+          {
+            label: 'Meta',
+            data: {{ chart_goals|safe }},
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            borderRadius: 4,
+            barPercentage: 0.6,
+            categoryPercentage: 0.8
+          },
+          {
+            label: 'Investido',
+            data: {{ chart_invested|safe }},
+            backgroundColor: '#3b82f6',
+            borderRadius: 4,
+            barPercentage: 0.6,
+            categoryPercentage: 0.8
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { color: textColor, usePointStyle: true, boxWidth: 8, font: { family: "'Inter', sans-serif", size: 12, weight: 500 } }
+          },
+          tooltip: {
+            backgroundColor: isDark ? 'rgba(10, 20, 40, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+            titleColor: isDark ? '#fff' : '#000',
+            bodyColor: isDark ? '#fff' : '#000',
+            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) { label += ': '; }
+                if (context.parsed.y !== null) {
+                  label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                }
+                return label;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: textColor, font: { family: "'Inter', sans-serif" } } },
+          y: {
+            grid: { color: gridColor, drawBorder: false },
+            ticks: { color: textColor, font: { family: "'Inter', sans-serif" }, callback: function(value) { return 'R$ ' + value; } }
+          }
+        }
+      }
+    });
+  });
+</script>
 {% endblock %}

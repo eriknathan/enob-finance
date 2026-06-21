@@ -3,6 +3,8 @@ from app_months.models import FinancialMonth
 from django.db import models
 
 
+from django.utils import timezone
+
 class Investment(TimestampedModel):
     financial_month = models.ForeignKey(
         FinancialMonth,
@@ -11,6 +13,7 @@ class Investment(TimestampedModel):
     )
     place = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
+    date = models.DateField(default=timezone.now)
 
     class Meta:
         ordering = ('-created_at',)

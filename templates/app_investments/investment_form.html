@@ -25,8 +25,9 @@
       {% csrf_token %}
       <div class="flex flex-col gap-4">
 
-        {% include 'components/input.html' with name='place' label='Onde foi investido' value=form.place.value errors=form.place.errors placeholder='Ex: Nubank, Tesouro Selic, XP…' %}
+        {% include 'components/input.html' with name='place' label='Local' value=form.place.value errors=form.place.errors placeholder='Ex: Nubank, Tesouro Selic, XP…' %}
         {% include 'components/input.html' with name='amount' label='Valor (R$)' type='number' value=form.amount.value errors=form.amount.errors placeholder='0,00' %}
+        {% include 'components/input.html' with name='date' label='Data' type='date' value=form.date.value|date:"Y-m-d"|default:form.date.value errors=form.date.errors %}
 
         <div class="flex items-center gap-3 pt-2">
           {% include 'components/button.html' with variant='primary' label='Salvar' %}

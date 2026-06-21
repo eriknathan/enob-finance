@@ -9,111 +9,123 @@
 {% with cur=request.resolver_match.url_name %}
 
 <!-- Desktop sidebar -->
-<aside class="w-64 min-h-screen bg-[#000918] flex flex-col py-8 px-4
-              fixed left-0 top-0 bottom-0 z-20 hidden lg:flex border-r border-white/5">
+<aside class="w-64 min-h-screen bg-[#000918] flex flex-col py-8 px-0
+              fixed left-0 top-0 bottom-0 z-20 hidden lg:flex border-r border-white/5 shadow-2xl">
 
   <!-- Logo -->
-  <div class="px-3 mb-10">
-    <a href="{{ url_dashboard|default:'/' }}" class="block">
-      <span class="text-xl font-bold bg-gradient-to-r from-[#0066FF] to-[#00AAFF] bg-clip-text text-transparent tracking-tight">
-        EnobFinance
-      </span>
-      <p class="text-[10px] text-white/30 mt-0.5 font-normal tracking-widest uppercase">Gestão financeira</p>
+  <div class="px-6 mb-10">
+    <a href="{{ url_dashboard|default:'/' }}" class="flex items-center gap-3 group">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0066FF] to-[#00AAFF] flex items-center justify-center shrink-0 shadow-lg shadow-[#0066FF]/30 group-hover:shadow-[#0066FF]/50 transition-all duration-300">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-xl font-bold tracking-tight text-white">Enob<span class="text-[#00AAFF]">Finance</span></span>
+      </div>
     </a>
   </div>
 
   <!-- Navigation -->
-  <nav class="flex flex-col gap-0.5 flex-1">
+  <nav class="flex flex-col gap-1 flex-1 px-3">
 
     <!-- Dashboard -->
     <a href="{{ url_dashboard|default:url_home|default:'/' }}"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
          {% if 'dashboard' in cur or cur == 'home' %}
-           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
          {% else %}
-           text-white/60 hover:text-white hover:bg-white/5
+           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
          {% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-1a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/>
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-1a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/>
       </svg>
       Dashboard
     </a>
 
     <!-- Meses -->
     <a href="{{ url_months|default:'#' }}"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
          {% if 'month' in cur %}
-           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
          {% else %}
-           text-white/60 hover:text-white hover:bg-white/5
+           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
          {% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
       Meses
     </a>
 
     <!-- Cartões -->
     <a href="{{ url_cards|default:'#' }}"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
          {% if 'card' in cur or 'invoice' in cur %}
-           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
          {% else %}
-           text-white/60 hover:text-white hover:bg-white/5
+           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
          {% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
       </svg>
       Cartões
     </a>
 
     <!-- Investimentos -->
     <a href="{{ url_investments|default:'#' }}"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-         {% if 'investment' in cur %}
-           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if 'investment' in cur and cur != 'investment-simulator' %}
+           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
          {% else %}
-           text-white/60 hover:text-white hover:bg-white/5
+           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
          {% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
       </svg>
       Investimentos
     </a>
 
+    <!-- Simulador -->
+    <a href="{% url 'investment-simulator' %}"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if cur == 'investment-simulator' %}
+           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
+         {% else %}
+           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
+         {% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      Simulador
+    </a>
+
     <!-- Parcelamentos -->
     <a href="{{ url_installments|default:'#' }}"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
          {% if 'installment' in cur %}
-           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
          {% else %}
-           text-white/60 hover:text-white hover:bg-white/5
+           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
          {% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
       </svg>
       Parcelamentos
     </a>
 
     <!-- Divider -->
-    <div class="my-3 border-t border-white/5"></div>
+    <div class="my-4 mx-3 border-t border-white/5"></div>
 
     <!-- Exportar -->
     <a href="{{ url_export|default:'#' }}"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
          {% if 'export' in cur %}
-           bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold shadow-blue-sm
+           bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]
          {% else %}
-           text-white/60 hover:text-white hover:bg-white/5
+           text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent
          {% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
       </svg>
       Exportar Excel
     </a>
@@ -121,23 +133,45 @@
   </nav>
 
   <!-- User footer -->
-  <div class="px-3 pt-4 border-t border-white/8">
-    <div class="flex items-center gap-2.5">
-      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#0066FF] to-[#00AAFF]
-                  flex items-center justify-center shrink-0">
-        <span class="text-white text-xs font-bold">{{ user.email|first|upper }}</span>
+  <div class="px-4 pt-4 mt-auto">
+    <div class="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col gap-3 group hover:bg-white/[0.06] transition-colors duration-300">
+      
+      <div class="flex items-center gap-3 overflow-hidden">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0066FF] to-[#00AAFF]
+                    flex items-center justify-center shrink-0 shadow-inner">
+          <span class="text-white text-sm font-bold">{{ user.email|first|upper }}</span>
+        </div>
+        <div class="flex flex-col overflow-hidden">
+          <span class="text-xs text-white font-semibold truncate tracking-wide">{{ user.email }}</span>
+          <span class="text-[9px] text-[#00AAFF] uppercase tracking-widest mt-0.5 font-bold">Plano Pro</span>
+        </div>
       </div>
-      <p class="text-xs text-white/40 truncate leading-tight">{{ user.email }}</p>
+
+      <div class="flex items-center justify-between border-t border-white/5 pt-3">
+        <button onclick="toggleTheme()" class="p-1.5 rounded-lg text-white/40 hover:text-[#00AAFF] hover:bg-[#00AAFF]/10 transition-all duration-300" title="Alternar tema">
+          <svg class="icon-sun w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <svg class="icon-moon w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+        <a href="{% url 'logout' %}" class="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all duration-300" title="Sair">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 </aside>
 
 <!-- Mobile sidebar (drawer) -->
 <aside id="mobile-sidebar"
-       class="w-72 min-h-screen bg-[#000918] flex flex-col py-8 px-4
+       class="w-72 min-h-screen bg-[#000918] flex flex-col py-8 px-0
               fixed left-0 top-0 bottom-0 z-40 lg:hidden
               transform -translate-x-full transition-transform duration-300 ease-in-out
-              border-r border-white/5">
+              border-r border-white/5 shadow-2xl">
 
   <!-- Close button -->
   <button onclick="closeMobileNav()"
@@ -148,73 +182,110 @@
   </button>
 
   <!-- Logo -->
-  <div class="px-3 mb-10">
-    <span class="text-xl font-bold bg-gradient-to-r from-[#0066FF] to-[#00AAFF] bg-clip-text text-transparent tracking-tight">
-      EnobFinance
-    </span>
+  <div class="px-6 mb-10">
+    <a href="{{ url_dashboard|default:'/' }}" class="flex items-center gap-3 group">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0066FF] to-[#00AAFF] flex items-center justify-center shrink-0 shadow-lg shadow-[#0066FF]/30">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-xl font-bold tracking-tight text-white">Enob<span class="text-[#00AAFF]">Finance</span></span>
+      </div>
+    </a>
   </div>
 
   <!-- Nav (duplicated for mobile) -->
-  <nav class="flex flex-col gap-0.5 flex-1">
+  <nav class="flex flex-col gap-1 flex-1 px-3">
     <a href="{{ url_dashboard|default:url_home|default:'/' }}" onclick="closeMobileNav()"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-         {% if 'dashboard' in cur or cur == 'home' %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if 'dashboard' in cur or cur == 'home' %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-1a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/>
       </svg>
       Dashboard
     </a>
     <a href="{{ url_months|default:'#' }}" onclick="closeMobileNav()"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-         {% if 'month' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if 'month' in cur %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
       Meses
     </a>
     <a href="{{ url_cards|default:'#' }}" onclick="closeMobileNav()"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-         {% if 'card' in cur or 'invoice' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if 'card' in cur or 'invoice' in cur %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
       </svg>
       Cartões
     </a>
     <a href="{{ url_investments|default:'#' }}" onclick="closeMobileNav()"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-         {% if 'investment' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if 'investment' in cur and cur != 'investment-simulator' %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
       </svg>
       Investimentos
     </a>
+    <a href="{% url 'investment-simulator' %}" onclick="closeMobileNav()"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if cur == 'investment-simulator' %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      Simulador
+    </a>
     <a href="{{ url_installments|default:'#' }}" onclick="closeMobileNav()"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-         {% if 'installment' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if 'installment' in cur %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
       </svg>
       Parcelamentos
     </a>
-    <div class="my-3 border-t border-white/5"></div>
+    <div class="my-4 mx-3 border-t border-white/5"></div>
     <a href="{{ url_export|default:'#' }}" onclick="closeMobileNav()"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
-         {% if 'export' in cur %}bg-gradient-to-r from-[#0066FF] to-[#00AAFF] text-white font-semibold{% else %}text-white/60 hover:text-white hover:bg-white/5{% endif %}">
-      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300
+         {% if 'export' in cur %}bg-gradient-to-r from-[#0066FF]/20 to-transparent text-[#00AAFF] border-l-[3px] border-[#0066FF]{% else %}text-white/50 hover:text-white hover:bg-white/5 border-l-[3px] border-transparent{% endif %}">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
       </svg>
       Exportar Excel
     </a>
   </nav>
 
-  <!-- User footer -->
-  <div class="px-3 pt-4 border-t border-white/8">
-    <div class="flex items-center gap-2.5">
-      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#0066FF] to-[#00AAFF]
-                  flex items-center justify-center shrink-0">
-        <span class="text-white text-xs font-bold">{{ user.email|first|upper }}</span>
+  <!-- User footer (Mobile) -->
+  <div class="px-4 pt-4 mt-auto">
+    <div class="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col gap-3 group hover:bg-white/[0.06] transition-colors duration-300">
+      
+      <div class="flex items-center gap-3 overflow-hidden">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0066FF] to-[#00AAFF]
+                    flex items-center justify-center shrink-0 shadow-inner">
+          <span class="text-white text-sm font-bold">{{ user.email|first|upper }}</span>
+        </div>
+        <div class="flex flex-col overflow-hidden">
+          <span class="text-xs text-white font-semibold truncate tracking-wide">{{ user.email }}</span>
+          <span class="text-[9px] text-[#00AAFF] uppercase tracking-widest mt-0.5 font-bold">Plano Pro</span>
+        </div>
       </div>
-      <p class="text-xs text-white/40 truncate">{{ user.email }}</p>
+
+      <div class="flex items-center justify-between border-t border-white/5 pt-3">
+        <button onclick="toggleTheme()" class="p-1.5 rounded-lg text-white/40 hover:text-[#00AAFF] hover:bg-[#00AAFF]/10 transition-all duration-300" title="Alternar tema">
+          <svg class="icon-sun w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <svg class="icon-moon w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+        <a href="{% url 'logout' %}" class="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all duration-300" title="Sair">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 </aside>
