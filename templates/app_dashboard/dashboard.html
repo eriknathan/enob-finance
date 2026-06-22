@@ -51,11 +51,6 @@
       </span>
     </div>
     <p class="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">{{ annual_totals.entries|brl }}</p>
-    {% if annual_totals.installment_sales %}
-    <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      + Vendas: <span class="font-medium">{{ annual_totals.installment_sales|brl }}</span>
-    </p>
-    {% endif %}
   </div>
 
   <!-- Despesas -->
@@ -70,11 +65,6 @@
       </span>
     </div>
     <p class="text-xl sm:text-2xl font-bold text-red-500 dark:text-red-400">{{ annual_totals.expenses|brl }}</p>
-    {% if annual_totals.invoices %}
-    <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      + Faturas: <span class="font-medium">{{ annual_totals.invoices|brl }}</span>
-    </p>
-    {% endif %}
   </div>
 
   <!-- Investimentos -->
@@ -89,11 +79,6 @@
       </span>
     </div>
     <p class="text-xl sm:text-2xl font-bold text-blue-500 dark:text-blue-400">{{ annual_totals.investments|brl }}</p>
-    {% if annual_totals.investment_goal %}
-    <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      Meta: <span class="font-medium">{{ annual_totals.investment_goal|brl }}</span>
-    </p>
-    {% endif %}
   </div>
 
   <!-- Faturas -->
@@ -109,11 +94,6 @@
       </span>
     </div>
     <p class="text-xl sm:text-2xl font-bold text-purple-500 dark:text-purple-400">{{ annual_totals.invoices|brl }}</p>
-    {% if annual_totals.installment_payments %}
-    <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      Parcelas: <span class="font-medium">{{ annual_totals.installment_payments|brl }}</span>
-    </p>
-    {% endif %}
   </div>
 
 </div>
@@ -163,7 +143,6 @@
           <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Fixas</th>
           <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Investido</th>
           <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Faturas</th>
-          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Saldo</th>
           <th class="px-4 py-2.5 w-12"></th>
         </tr>
       </thead>
@@ -225,14 +204,6 @@
           <td class="px-6 py-3 text-right">
             {% if row.exists %}
             <span class="text-sm font-semibold text-purple-500 dark:text-purple-400">{{ row.invoices|brl }}</span>
-            {% else %}
-            <span class="text-xs text-[#454D60] dark:text-white/20">—</span>
-            {% endif %}
-          </td>
-
-          <td class="px-6 py-3 text-right">
-            {% if row.exists %}
-            <span class="text-sm font-bold text-amber-500 dark:text-amber-400">{{ row.balance|brl }}</span>
             {% else %}
             <span class="text-xs text-[#454D60] dark:text-white/20">—</span>
             {% endif %}
@@ -447,15 +418,6 @@
             tension: 0.4,
             fill: true
           },
-          {
-            label: 'Saldo',
-            data: {{ chart_balances|safe }},
-            borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245, 158, 11, 0.05)',
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true
-          }
         ]
       },
       options: {

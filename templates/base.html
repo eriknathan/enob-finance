@@ -47,10 +47,10 @@
     }
   </script>
 
-  <!-- Sora -->
+  <!-- Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -61,7 +61,7 @@
       --scrollbar-thumb: #454D60;
       --scrollbar-hover: #0066FF;
     }
-    * { font-family: 'Sora', sans-serif; }
+    * { font-family: 'Inter', sans-serif; }
     /* Smooth theme transitions */
     body, .transition-theme { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
     
@@ -116,11 +116,19 @@
     <div class="flex-1 flex flex-col lg:ml-64 min-w-0">
 
       <!-- Mobile header -->
-      <div class="lg:hidden flex items-center justify-between px-6 py-4 bg-white dark:bg-[#0A1428] border-b border-gray-200 dark:border-white/8 transition-theme">
-        <span class="text-base font-bold bg-gradient-to-r from-[#0066FF] to-[#00AAFF] bg-clip-text text-transparent tracking-tight">EnobFinance</span>
-        <button onclick="openMobileNav()" class="p-2 -mr-2 text-[#454D60] dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-all">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
+      <div class="lg:hidden flex items-center justify-between px-6 py-4 bg-white/90 dark:bg-[#0A1428]/80 backdrop-blur-xl border-b border-gray-200 dark:border-white/8 transition-theme sticky top-0 z-20 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0066FF] to-[#00AAFF] flex items-center justify-center shrink-0 shadow-lg shadow-[#0066FF]/30">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <span class="text-xl font-bold bg-gradient-to-r from-[#0066FF] to-[#00AAFF] bg-clip-text text-transparent tracking-tight">Enob<span class="text-[#000918] dark:text-white">Finance</span></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleTheme()" class="p-2 text-[#454D60] dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-all" title="Alternar tema">
+             <svg class="icon-sun w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+             <svg class="icon-moon w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+        </div>
       </div>
 
       <!-- Flash messages -->
@@ -139,7 +147,7 @@
       {% endif %}
 
       <!-- Page content -->
-      <main class="flex-1 p-6 max-w-screen-2xl w-full mx-auto animate-fade-up">
+      <main class="flex-1 p-6 pb-24 lg:pb-6 max-w-screen-2xl w-full mx-auto animate-fade-up">
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center gap-2 text-sm">
             {% block breadcrumb %}{% endblock %}
@@ -152,6 +160,65 @@
       </main>
 
     </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-[#0A1428]/95 backdrop-blur-xl border-t border-gray-200 dark:border-white/10 z-40" style="padding-bottom: env(safe-area-inset-bottom);">
+      {% with cur=request.resolver_match.url_name %}
+      <div class="flex items-center justify-around px-2 py-3">
+        <!-- Dashboard -->
+        <a href="{% url 'dashboard' %}" class="flex flex-col items-center gap-1 w-16 text-center {% if 'dashboard' in cur or cur == 'home' %}text-[#0066FF] dark:text-[#00AAFF]{% else %}text-[#454D60] dark:text-white/50 hover:text-[#000918] dark:hover:text-white{% endif %} transition-colors">
+          <div class="relative">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-1a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/></svg>
+            {% if 'dashboard' in cur or cur == 'home' %}
+            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#0066FF] dark:bg-[#00AAFF]"></div>
+            {% endif %}
+          </div>
+          <span class="text-[10px] font-semibold mt-0.5 tracking-wide">Início</span>
+        </a>
+
+        <!-- Meses -->
+        <a href="{% url 'month-current' %}" class="flex flex-col items-center gap-1 w-16 text-center {% if 'month' in cur %}text-[#0066FF] dark:text-[#00AAFF]{% else %}text-[#454D60] dark:text-white/50 hover:text-[#000918] dark:hover:text-white{% endif %} transition-colors">
+          <div class="relative">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            {% if 'month' in cur %}
+            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#0066FF] dark:bg-[#00AAFF]"></div>
+            {% endif %}
+          </div>
+          <span class="text-[10px] font-semibold mt-0.5 tracking-wide">Meses</span>
+        </a>
+
+        <!-- Cartões -->
+        <a href="{% url 'card-list' %}" class="flex flex-col items-center gap-1 w-16 text-center {% if 'card' in cur or 'invoice' in cur %}text-[#0066FF] dark:text-[#00AAFF]{% else %}text-[#454D60] dark:text-white/50 hover:text-[#000918] dark:hover:text-white{% endif %} transition-colors">
+          <div class="relative">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            {% if 'card' in cur or 'invoice' in cur %}
+            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#0066FF] dark:bg-[#00AAFF]"></div>
+            {% endif %}
+          </div>
+          <span class="text-[10px] font-semibold mt-0.5 tracking-wide">Cartões</span>
+        </a>
+
+        <!-- Investimentos -->
+        <a href="{% url 'investment-annual' %}" class="flex flex-col items-center gap-1 w-16 text-center {% if 'investment' in cur and cur != 'investment-simulator' %}text-[#0066FF] dark:text-[#00AAFF]{% else %}text-[#454D60] dark:text-white/50 hover:text-[#000918] dark:hover:text-white{% endif %} transition-colors">
+          <div class="relative">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            {% if 'investment' in cur and cur != 'investment-simulator' %}
+            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#0066FF] dark:bg-[#00AAFF]"></div>
+            {% endif %}
+          </div>
+          <span class="text-[10px] font-semibold mt-0.5 tracking-wide">Investir</span>
+        </a>
+
+        <!-- Menu Drawer -->
+        <button onclick="openMobileNav()" class="flex flex-col items-center gap-1 w-16 text-center text-[#454D60] dark:text-white/50 hover:text-[#000918] dark:hover:text-white transition-colors">
+          <div class="relative">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </div>
+          <span class="text-[10px] font-semibold mt-0.5 tracking-wide">Mais</span>
+        </button>
+      </div>
+      {% endwith %}
+    </nav>
   </div>
 
   {% else %}
