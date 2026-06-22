@@ -18,13 +18,13 @@
     <div class="absolute inset-0 pointer-events-none"
          style="background:radial-gradient(60% 80% at 0% 0%, rgba(0,102,255,0.15), transparent)"></div>
     <div class="relative">
-      <p class="text-[10px] text-white/40 font-medium uppercase tracking-widest mb-1">Saldo — {{ current_month_name }} {{ today.year }}</p>
-      <p class="text-3xl sm:text-4xl font-bold tracking-tight {{ current_month.current_balance|balance_color }}">
-        {{ current_month.current_balance|brl }}
+      <p class="text-[10px] text-white/40 font-medium uppercase tracking-widest mb-1">Saldo — {{ selected_year }}</p>
+      <p class="text-3xl sm:text-4xl font-bold tracking-tight {{ annual_totals.balance|balance_color }}">
+        {{ annual_totals.balance|brl }}
       </p>
-      {% if current_month.previous_balance %}
+      {% if annual_totals.previous_balance %}
       <p class="text-xs text-white/30 mt-2">
-        Mês anterior: <span class="text-white/50 font-medium">{{ current_month.previous_balance|brl }}</span>
+        Ano anterior: <span class="text-white/50 font-medium">{{ annual_totals.previous_balance|brl }}</span>
       </p>
       {% endif %}
       <a href="{% url 'month-current' %}"
@@ -34,7 +34,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
-        Ver mês completo
+        Ver mês atual
       </a>
     </div>
   </div>
@@ -50,10 +50,10 @@
         </svg>
       </span>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">{{ current_month.total_entries|brl }}</p>
-    {% if current_month.total_installment_sales %}
+    <p class="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">{{ annual_totals.entries|brl }}</p>
+    {% if annual_totals.installment_sales %}
     <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      + Vendas: <span class="font-medium">{{ current_month.total_installment_sales|brl }}</span>
+      + Vendas: <span class="font-medium">{{ annual_totals.installment_sales|brl }}</span>
     </p>
     {% endif %}
   </div>
@@ -69,10 +69,10 @@
         </svg>
       </span>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-red-500 dark:text-red-400">{{ current_month.total_variable_expenses|brl }}</p>
-    {% if current_month.total_card_invoices %}
+    <p class="text-xl sm:text-2xl font-bold text-red-500 dark:text-red-400">{{ annual_totals.expenses|brl }}</p>
+    {% if annual_totals.invoices %}
     <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      + Faturas: <span class="font-medium">{{ current_month.total_card_invoices|brl }}</span>
+      + Faturas: <span class="font-medium">{{ annual_totals.invoices|brl }}</span>
     </p>
     {% endif %}
   </div>
@@ -88,10 +88,10 @@
         </svg>
       </span>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-blue-500 dark:text-blue-400">{{ current_month.total_investments|brl }}</p>
-    {% if current_month.investment_goal %}
+    <p class="text-xl sm:text-2xl font-bold text-blue-500 dark:text-blue-400">{{ annual_totals.investments|brl }}</p>
+    {% if annual_totals.investment_goal %}
     <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      Meta: <span class="font-medium">{{ current_month.investment_goal|brl }}</span>
+      Meta: <span class="font-medium">{{ annual_totals.investment_goal|brl }}</span>
     </p>
     {% endif %}
   </div>
@@ -108,10 +108,10 @@
         </svg>
       </span>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-purple-500 dark:text-purple-400">{{ current_month.total_card_invoices|brl }}</p>
-    {% if current_month.total_installment_payments %}
+    <p class="text-xl sm:text-2xl font-bold text-purple-500 dark:text-purple-400">{{ annual_totals.invoices|brl }}</p>
+    {% if annual_totals.installment_payments %}
     <p class="text-xs text-[#454D60] dark:text-white/30 mt-1">
-      Parcelas: <span class="font-medium">{{ current_month.total_installment_payments|brl }}</span>
+      Parcelas: <span class="font-medium">{{ annual_totals.installment_payments|brl }}</span>
     </p>
     {% endif %}
   </div>
