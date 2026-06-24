@@ -19,6 +19,8 @@ build:
 	docker compose up --build -d
 
 up:
+	@echo "Dropando containers..."
+	docker compose down
 	@echo "Iniciando build e recriando containers..."
 	docker compose up --build --force-recreate -d
 	@echo "Aguardando os serviços iniciarem..."

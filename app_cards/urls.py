@@ -12,7 +12,9 @@ urlpatterns = [
 
     # CardInvoice CRUD
     path('meses/<int:year>/<int:month>/fatura/nova/', views.CardInvoiceCreateView.as_view(), name='invoice-create'),
+    path('fatura/<int:pk>/', views.InvoiceDetailView.as_view(), name='invoice-detail'),
     path('fatura/<int:pk>/editar/', views.CardInvoiceUpdateView.as_view(), name='invoice-update'),
     path('fatura/<int:pk>/excluir/', views.CardInvoiceDeleteView.as_view(), name='invoice-delete'),
     path('fatura/<int:pk>/toggle/', views.CardInvoiceToggleView.as_view(), name='invoice-toggle'),
+    path('fatura/<int:pk>/importar-csv/', views.InvoiceCSVUploadView.as_view(), name='invoice-csv-upload'),
 ]

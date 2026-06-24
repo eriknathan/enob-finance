@@ -13,87 +13,104 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
 
   <!-- Balance card (wide) -->
-  <div class="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-2 rounded-2xl bg-gradient-to-br from-[#0A1428] to-[#000918]
-              text-white p-6 border border-white/8 shadow-xl relative overflow-hidden">
+  <div class="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-2 rounded-2xl bg-gradient-to-br from-[#0A1428] via-[#0F192E] to-[#000918]
+              text-white p-6 border border-white/10 shadow-lg relative overflow-hidden group">
     <div class="absolute inset-0 pointer-events-none"
          style="background:radial-gradient(60% 80% at 0% 0%, rgba(0,102,255,0.15), transparent)"></div>
-    <div class="relative">
-      <p class="text-[10px] text-white/40 font-medium uppercase tracking-widest mb-1">Saldo — {{ selected_year }}</p>
-      <p class="text-3xl sm:text-4xl font-bold tracking-tight {{ annual_totals.balance|balance_color }}">
-        {{ annual_totals.balance|brl }}
-      </p>
-      {% if annual_totals.previous_balance %}
-      <p class="text-xs text-white/30 mt-2">
-        Ano anterior: <span class="text-white/50 font-medium">{{ annual_totals.previous_balance|brl }}</span>
-      </p>
-      {% endif %}
-      <a href="{% url 'month-current' %}"
-         class="inline-flex items-center gap-1.5 mt-5 px-4 py-2 rounded-lg text-xs font-semibold
-                bg-white/10 hover:bg-white/15 text-white transition-all border border-white/10">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
-        Ver mês atual
-      </a>
+    <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-10 -mt-10 transition-transform duration-500 group-hover:scale-110"></div>
+    <div class="relative flex flex-col sm:flex-row justify-between items-start sm:items-center h-full gap-4">
+      <div>
+        <p class="text-[10px] text-white/50 font-medium uppercase tracking-widest mb-1">Saldo — {{ selected_year }}</p>
+        <p class="text-3xl sm:text-4xl font-bold tracking-tight {{ annual_totals.balance|balance_color }}">
+          {{ annual_totals.balance|brl }}
+        </p>
+        {% if annual_totals.previous_balance %}
+        <p class="text-xs text-white/40 mt-1.5">
+          Ano anterior: <span class="text-white/70 font-medium">{{ annual_totals.previous_balance|brl }}</span>
+        </p>
+        {% endif %}
+      </div>
+      <div>
+        <a href="{% url 'month-current' %}"
+           class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold
+                  bg-white/10 hover:bg-white/20 text-white transition-all border border-white/10 hover:border-white/20 shadow-sm backdrop-blur-sm whitespace-nowrap">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          Ver mês atual
+        </a>
+      </div>
     </div>
   </div>
 
   <!-- Entradas -->
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
-              shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
-    <div class="flex items-center justify-between mb-3">
-      <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest">Entradas</p>
-      <span class="w-7 h-7 rounded-lg bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
-        <svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-      </span>
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/10
+              shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:shadow-green-500/5 hover:border-green-200 dark:hover:border-green-500/30 group relative overflow-hidden flex flex-col justify-center">
+    <div class="absolute right-0 top-0 w-24 h-24 bg-gradient-to-br from-green-50 to-transparent dark:from-green-500/5 opacity-50 rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-110"></div>
+    <div class="relative">
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-[10px] text-[#64748B] dark:text-white/50 font-semibold uppercase tracking-wider">Entradas</p>
+        <span class="w-7 h-7 rounded-lg bg-green-50 dark:bg-green-500/10 flex items-center justify-center text-green-600 dark:text-green-400 group-hover:bg-green-500 group-hover:text-white transition-colors duration-300">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+          </svg>
+        </span>
+      </div>
+      <p class="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">{{ annual_totals.entries|brl }}</p>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">{{ annual_totals.entries|brl }}</p>
   </div>
 
-  <!-- Despesas -->
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
-              shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
-    <div class="flex items-center justify-between mb-3">
-      <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest">Saídas</p>
-      <span class="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
-        <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
-        </svg>
-      </span>
+  <!-- Saídas -->
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/10
+              shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:shadow-red-500/5 hover:border-red-200 dark:hover:border-red-500/30 group relative overflow-hidden flex flex-col justify-center">
+    <div class="absolute right-0 top-0 w-24 h-24 bg-gradient-to-br from-red-50 to-transparent dark:from-red-500/5 opacity-50 rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-110"></div>
+    <div class="relative">
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-[10px] text-[#64748B] dark:text-white/50 font-semibold uppercase tracking-wider">Saídas</p>
+        <span class="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center text-red-500 dark:text-red-400 group-hover:bg-red-500 group-hover:text-white transition-colors duration-300">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
+          </svg>
+        </span>
+      </div>
+      <p class="text-xl sm:text-2xl font-bold text-red-500 dark:text-red-400">{{ annual_totals.expenses|brl }}</p>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-red-500 dark:text-red-400">{{ annual_totals.expenses|brl }}</p>
   </div>
 
   <!-- Investimentos -->
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
-              shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
-    <div class="flex items-center justify-between mb-3">
-      <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest">Investido</p>
-      <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center">
-        <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-        </svg>
-      </span>
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/10
+              shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:shadow-blue-500/5 hover:border-blue-200 dark:hover:border-blue-500/30 group relative overflow-hidden flex flex-col justify-center">
+    <div class="absolute right-0 top-0 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent dark:from-blue-500/5 opacity-50 rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-110"></div>
+    <div class="relative">
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-[10px] text-[#64748B] dark:text-white/50 font-semibold uppercase tracking-wider">Investido</p>
+        <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 dark:text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
+        </span>
+      </div>
+      <p class="text-xl sm:text-2xl font-bold text-blue-500 dark:text-blue-400">{{ annual_totals.investments|brl }}</p>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-blue-500 dark:text-blue-400">{{ annual_totals.investments|brl }}</p>
   </div>
 
   <!-- Faturas -->
-  <div class="rounded-xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8
-              shadow-sm p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-gray-200 dark:hover:border-white/20">
-    <div class="flex items-center justify-between mb-3">
-      <p class="text-[10px] text-[#454D60] dark:text-white/40 font-medium uppercase tracking-widest">Faturas</p>
-      <span class="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center">
-        <svg class="w-3.5 h-3.5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-        </svg>
-      </span>
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/10
+              shadow-sm p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:shadow-purple-500/5 hover:border-purple-200 dark:hover:border-purple-500/30 group relative overflow-hidden flex flex-col justify-center">
+    <div class="absolute right-0 top-0 w-24 h-24 bg-gradient-to-br from-purple-50 to-transparent dark:from-purple-500/5 opacity-50 rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-110"></div>
+    <div class="relative">
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-[10px] text-[#64748B] dark:text-white/50 font-semibold uppercase tracking-wider">Faturas</p>
+        <span class="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center text-purple-500 dark:text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+          </svg>
+        </span>
+      </div>
+      <p class="text-xl sm:text-2xl font-bold text-purple-500 dark:text-purple-400">{{ annual_totals.invoices|brl }}</p>
     </div>
-    <p class="text-xl sm:text-2xl font-bold text-purple-500 dark:text-purple-400">{{ annual_totals.invoices|brl }}</p>
   </div>
 
 </div>

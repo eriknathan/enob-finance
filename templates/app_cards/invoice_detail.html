@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+
+{% block title %}Fatura — {{ invoice.card.name }} {{ invoice.financial_month }} — EnobFinance{% endblock %}
+
+{% block breadcrumb %}
+<a href="{% url 'card-list' %}" class="text-sm font-medium text-[#454D60] dark:text-white/40 hover:text-[#000918] dark:hover:text-white transition-colors">Cartões</a>
+<span class="text-sm font-medium text-[#454D60] dark:text-white/40">/</span>
+<a href="{% url 'card-detail' invoice.card.pk %}" class="text-sm font-medium text-[#454D60] dark:text-white/40 hover:text-[#000918] dark:hover:text-white transition-colors">{{ invoice.card.name }}</a>
+<span class="text-sm font-medium text-[#454D60] dark:text-white/40">/</span>
+<span class="text-sm font-semibold text-[#000918] dark:text-white">{{ invoice.financial_month }}</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <h1 class="text-2xl font-bold text-[#000918] dark:text-white">Fatura — {{ invoice.financial_month }}</h1>
+    <div class="flex items-center gap-2 mt-1">
+      <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-blue-50 text-[#0066FF] dark:bg-[#0066FF]/10 dark:text-[#00AAFF]">{{ invoice.card.brand }}</span>
+      <span class="text-xs text-[#454D60] dark:text-white/40">{{ invoice.card.name }}</span>
+    </div>
+  </div>
+  <div class="flex gap-2">
+    <a href="{% url 'invoice-update' invoice.pk %}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-[#454D60] dark:text-white/50 bg-white dark:bg-[#0A1428] border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      Editar
+    </a>
+    <a href="{% url 'invoice-delete' invoice.pk %}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-red-500 bg-white dark:bg-[#0A1428] border border-gray-200 dark:border-white/10 hover:bg-red-50 dark:hover:bg-red-500/5 transition-all">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      Excluir
+    </a>
+  </div>
+</div>
+
+<!-- Summary cards -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-5">
+    <p class="text-xs font-medium text-[#454D60] dark:text-white/40 uppercase tracking-widest mb-1">Valor total</p>
+    <p class="text-2xl font-bold text-purple-500 dark:text-purple-400">{{ invoice.amount|brl }}</p>
+  </div>
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-5">
+    <p class="text-xs font-medium text-[#454D60] dark:text-white/40 uppercase tracking-widest mb-1">Status</p>
+    <form method="post" action="{% url 'invoice-toggle' invoice.pk %}" class="inline-block mt-1">
+      {% csrf_token %}
+      <button type="submit" class="hover:opacity-80 transition-opacity focus:outline-none rounded-full cursor-pointer" title="Clique para alterar o status">
+        {% include 'components/status_pill.html' with status=invoice.status %}
+      </button>
+    </form>
+  </div>
+  <div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm p-5">
+    <p class="text-xs font-medium text-[#454D60] dark:text-white/40 uppercase tracking-widest mb-1">Itens importados</p>
+    <p class="text-2xl font-bold text-[#000918] dark:text-white">{{ items|length }}</p>
+  </div>
+</div>
+
+<!-- Items section -->
+<div class="rounded-2xl bg-white dark:bg-[#0A1428] border border-gray-100 dark:border-white/8 shadow-sm">
+  <div class="px-6 py-4 border-b border-gray-100 dark:border-white/8 flex items-center justify-between gap-4">
+    <div>
+      <h2 class="text-base font-semibold text-[#000918] dark:text-white">Itens da Fatura</h2>
+      <p class="text-xs text-[#454D60] dark:text-white/40 mt-0.5">Importados do CSV do Nubank</p>
+    </div>
+    <!-- Upload form -->
+    <form method="post" action="{% url 'invoice-csv-upload' invoice.pk %}" enctype="multipart/form-data" class="flex items-center gap-2">
+      {% csrf_token %}
+      <label class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-[#454D60] dark:text-white/50 bg-white dark:bg-[#0A1428] border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+        <span>{% if items %}Reimportar CSV{% else %}Importar CSV{% endif %}</span>
+        <input type="file" name="csv_file" accept=".csv" class="hidden" onchange="this.closest('form').submit()">
+      </label>
+    </form>
+  </div>
+
+  {% if items %}
+  <div class="overflow-x-auto">
+    <table class="w-full whitespace-nowrap">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-black/40">
+          <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Data</th>
+          <th class="px-6 py-2.5 text-left text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Descrição</th>
+          <th class="px-6 py-2.5 text-right text-[10px] font-semibold text-[#454D60] dark:text-white/60 uppercase tracking-widest">Valor</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+        {% for item in items %}
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/3 transition-colors">
+          <td class="px-6 py-3 text-sm text-[#454D60] dark:text-white/50 tabular-nums">{{ item.date|date:'d/m/Y' }}</td>
+          <td class="px-6 py-3 text-sm text-[#000918] dark:text-white/80">{{ item.description }}</td>
+          <td class="px-6 py-3 text-sm font-semibold text-purple-500 dark:text-purple-400 text-right tabular-nums">{{ item.amount|brl }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="bg-gray-50 dark:bg-black/20 border-t border-gray-100 dark:border-white/8">
+          <td colspan="2" class="px-6 py-3 text-xs font-semibold text-[#454D60] dark:text-white/40 uppercase tracking-widest">Total dos itens</td>
+          <td class="px-6 py-3 text-sm font-bold text-purple-600 dark:text-purple-400 text-right tabular-nums">
+            {% with total=0 %}
+            {{ items|length }} itens
+            {% endwith %}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  {% else %}
+  <div class="px-6 py-16 flex flex-col items-center justify-center text-center">
+    <div class="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-500/5 flex items-center justify-center mb-3">
+      <svg class="w-6 h-6 text-purple-400 dark:text-purple-400/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+    </div>
+    <p class="text-sm font-medium text-[#000918] dark:text-white/60 mb-1">Nenhum item importado</p>
+    <p class="text-xs text-[#454D60] dark:text-white/30">Importe o CSV da fatura do Nubank para ver os gastos detalhados.</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -36,3 +36,13 @@ class CardInvoiceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['card'].queryset = Card.objects.filter(user=user)
         self.fields['card'].empty_label = 'Selecione um cartão'
+
+
+class InvoiceCSVUploadForm(forms.Form):
+    csv_file = forms.FileField(label='Arquivo CSV')
+
+    def clean_csv_file(self):
+        f = self.cleaned_data['csv_file']
+        if not f.name.endswith('.csv'):
+            raise forms.ValidationError('O arquivo deve ser um .csv.')
+        return f

@@ -57,3 +57,18 @@ class CardInvoice(TimestampedModel):
 
     def __str__(self):
         return f'{self.card.name} — {self.financial_month}'
+
+
+class InvoiceItem(TimestampedModel):
+    invoice = models.ForeignKey(CardInvoice, on_delete=models.CASCADE, related_name='items')
+    date = models.DateField()
+    description = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+
+    class Meta:
+        ordering = ('date',)
+        verbose_name = 'item de fatura'
+        verbose_name_plural = 'itens de fatura'
+
+    def __str__(self):
+        return f'{self.description} — {self.amount}'

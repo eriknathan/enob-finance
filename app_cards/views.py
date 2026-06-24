@@ -1,3 +1,8 @@
+import csv
+import io
+from datetime import datetime
+from decimal import Decimal, InvalidOperation
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
@@ -6,8 +11,8 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView, D
 
 from app_months.models import FinancialMonth
 
-from .forms import CardForm, CardInvoiceForm
-from .models import Card, CardInvoice
+from .forms import CardForm, CardInvoiceForm, InvoiceCSVUploadForm
+from .models import Card, CardInvoice, InvoiceItem
 
 
 # ── Card CRUD ─────────────────────────────────────────────────────────────────
@@ -182,6 +187,60 @@ class CardInvoiceDeleteView(LoginRequiredMixin, DeleteView):
         ctx['cancel_url'] = reverse('month-detail', kwargs={'year': fm.year, 'month': fm.month})
         ctx['item_label'] = f'Fatura: {self.object.card.name} — {fm}'
         return ctx
+
+class InvoiceDetailView(LoginRequiredMixin, DetailView):
+    model = CardInvoice
+    template_name = 'app_cards/invoice_detail.html'
+    context_object_name = 'invoice'
+
+    def get_queryset(self):
+        return CardInvoice.objects.filter(financial_month__user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['items'] = self.object.items.all()
+        ctx['upload_form'] = InvoiceCSVUploadForm()
+        return ctx
+
+
+class InvoiceCSVUploadView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        invoice = get_object_or_404(CardInvoice, pk=pk, financial_month__user=request.user)
+        form = InvoiceCSVUploadForm(request.POST, request.FILES)
+        if not form.is_valid():
+            messages.error(request, 'Arquivo inválido. Envie um arquivo .csv.')
+            return redirect('invoice-detail', pk=pk)
+
+        decoded = request.FILES['csv_file'].read().decode('utf-8')
+        reader = csv.DictReader(io.StringIO(decoded))
+
+        items = []
+        for row in reader:
+            title = row.get('title', '').strip()
+            date_str = row.get('date', '').strip()
+            amount_str = row.get('amount', '').strip()
+
+            if not title or not date_str or not amount_str:
+                continue
+            try:
+                normalized = amount_str.replace(' ', '').replace('.', '').replace(',', '.')
+                amount = Decimal(normalized)
+            except InvalidOperation:
+                continue
+            if amount <= 0:
+                continue
+            try:
+                date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError:
+                continue
+
+            items.append(InvoiceItem(invoice=invoice, date=date, description=title, amount=amount))
+
+        invoice.items.all().delete()
+        InvoiceItem.objects.bulk_create(items)
+        messages.success(request, f'{len(items)} itens importados com sucesso.')
+        return redirect('invoice-detail', pk=pk)
+
 
 class CardInvoiceToggleView(LoginRequiredMixin, View):
     def post(self, request, pk):
